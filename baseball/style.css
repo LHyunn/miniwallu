@@ -1,0 +1,643 @@
+* { box-sizing: border-box; }
+
+/* 라이트 테마 (기본) */
+body {
+  --bg: #f3f4f6;
+  --panel: #ffffff;
+  --panel-border: #d9dce1;
+  --text: #1f2328;
+  --muted: #6b7280;
+  --btn-bg: #5b8def;
+  --btn-bg-hover: #4a7bdb;
+  --btn-text: #ffffff;
+  --btn-disabled-bg: #e5e7eb;
+  --btn-disabled-text: #9aa1ad;
+  --input-bg: #ffffff;
+  --input-border: #c9cdd4;
+  --accent: #3b6fd4;
+  --xl-bg: #ffffff;
+  --xl-grid: #d4d4d4;
+  --xl-head-bg: #e9ebee;
+  --xl-head-border: #c6c6c6;
+  --xl-head-text: #555555;
+  --xl-text: #1f1f1f;
+  --xl-green: #217346;
+  --xl-ball: #bf8f00;
+  --xl-out: #a6a6a6;
+  --xl-btnface: #e8eaed;
+  --xl-btnface-hover: #dcdfe4;
+  --xl-btnborder: #aeb3bb;
+  --xl-titlebar-bg: #217346;
+  --xl-titlebar-text: #ffffff;
+  --xl-ribbon-bg: #f3f2f1;
+  --pill-strike-bg: #d8efe1;
+  --pill-strike-tx: #217346;
+  --pill-ball-bg: #f2e8c9;
+  --pill-ball-tx: #8a6d00;
+  --pill-out-bg: #e5e7eb;
+  --pill-out-tx: #6b7280;
+}
+
+/* 다크 테마 */
+body[data-theme="dark"] {
+  --bg: #0f1117;
+  --panel: #1a1d27;
+  --panel-border: #2a2e3a;
+  --text: #e8e8ec;
+  --muted: #9096a6;
+  --btn-bg: #5b8def;
+  --btn-bg-hover: #4a7bdb;
+  --btn-text: #ffffff;
+  --btn-disabled-bg: #2a2e3a;
+  --btn-disabled-text: #6b7180;
+  --input-bg: #0f1117;
+  --input-border: #2a2e3a;
+  --accent: #5b8def;
+  --xl-bg: #212226;
+  --xl-grid: #3a3d44;
+  --xl-head-bg: #2b2e35;
+  --xl-head-border: #454952;
+  --xl-head-text: #b8bcc6;
+  --xl-text: #e8e8ec;
+  --xl-green: #4fbe8a;
+  --xl-ball: #d9b84a;
+  --xl-out: #7a7f8a;
+  --xl-btnface: #3a3d44;
+  --xl-btnface-hover: #454952;
+  --xl-btnborder: #555a64;
+  --xl-titlebar-bg: #1f2124;
+  --xl-titlebar-text: #c8ccd4;
+  --xl-ribbon-bg: #26282d;
+  --pill-strike-bg: #2a5c3e;
+  --pill-strike-tx: #7ee2a3;
+  --pill-ball-bg: #4a4420;
+  --pill-ball-tx: #e8d377;
+  --pill-out-bg: #2a2e3a;
+  --pill-out-tx: #6b7180;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+}
+
+#app {
+  width: 100%;
+  max-width: 560px;
+  padding: 24px;
+}
+
+header h1 {
+  text-align: center;
+  margin: 0 0 24px;
+  font-size: 28px;
+}
+
+#btn-theme, #btn-stealth {
+  position: fixed;
+  z-index: 20;
+  top: 14px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#btn-theme { right: 14px; }
+#btn-stealth { right: 60px; }
+
+/* 게임(시트) 화면에서는 제목 표시줄에 녹아들게 축소 */
+body.in-sheet #btn-theme, body.in-sheet #btn-stealth {
+  top: 3px;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  background: transparent;
+  border: none;
+}
+
+body.in-sheet #btn-theme { right: 10px; }
+body.in-sheet #btn-stealth { right: 40px; }
+
+/* 월루모드: 게임 필수 요소 외 전부 숨김 */
+body.stealth h1,
+body.stealth .hint,
+body.stealth .divider { display: none; }
+
+body.stealth #btn-theme,
+body.stealth #btn-stealth { opacity: 0.4; }
+
+body.stealth #btn-theme:hover,
+body.stealth #btn-stealth:hover { opacity: 1; }
+
+body.stealth #screen-end h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.hidden { display: none; }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.card h2 { margin: 0 0 4px; font-size: 18px; }
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 4px 0 14px;
+}
+
+.divider {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin: 12px 0;
+}
+
+input.code-input {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 20px;
+  letter-spacing: 4px;
+  text-align: center;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+input.code-input:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+}
+
+select#digit-select {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  cursor: pointer;
+}
+
+button:hover { background: var(--btn-bg-hover); }
+
+button:disabled {
+  background: var(--btn-disabled-bg);
+  color: var(--btn-disabled-text);
+  cursor: not-allowed;
+}
+
+.code {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  background: var(--input-bg);
+  border: 1px dashed var(--accent);
+  border-radius: 8px;
+  padding: 14px;
+  color: var(--accent);
+}
+
+.status {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  min-height: 20px;
+}
+
+.build-info {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 14px;
+}
+
+/* ===== 게임 화면: 브라우저 창 전체를 채우는 가짜 엑셀 ===== */
+#screen-game {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  background: var(--xl-bg);
+  font-family: "Segoe UI", "Malgun Gothic", sans-serif;
+  font-size: 13px;
+  color: var(--xl-text);
+}
+
+#screen-game.hidden { display: none; }
+
+.xl-titlebar {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  flex: none;
+  background: var(--xl-titlebar-bg);
+  color: var(--xl-titlebar-text);
+  font-size: 12px;
+}
+
+.xl-qat { width: 130px; padding-left: 12px; letter-spacing: 1px; opacity: 0.9; }
+#xl-filename { flex: 1; text-align: center; }
+.xl-title-spacer { width: 130px; }
+
+.xl-menubar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 30px;
+  flex: none;
+  background: var(--xl-ribbon-bg);
+  padding: 0 6px;
+  font-size: 12.5px;
+}
+
+.xl-menu { padding: 5px 11px; color: var(--xl-text); }
+
+.xl-menu.xl-menu-file {
+  background: var(--xl-green);
+  color: #fff;
+  font-weight: 600;
+}
+
+.xl-menu.active {
+  font-weight: 600;
+  color: var(--xl-green);
+  box-shadow: inset 0 -2px 0 var(--xl-green);
+}
+
+.xl-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 36px;
+  flex: none;
+  background: var(--xl-ribbon-bg);
+  border-bottom: 1px solid var(--xl-head-border);
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--xl-head-text);
+}
+
+.xl-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 14px;
+  border-right: 1px solid var(--xl-head-border);
+}
+
+.xl-tool-group:last-child { border-right: none; }
+
+.xl-fontbox, .xl-sizebox {
+  background: var(--xl-bg);
+  border: 1px solid var(--xl-head-border);
+  border-radius: 2px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.xl-tool { padding: 2px 4px; }
+
+.xl-formulabar {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  flex: none;
+  background: var(--xl-bg);
+  border-bottom: 1px solid var(--xl-head-border);
+  font-size: 12px;
+}
+
+#xl-namebox {
+  width: 70px;
+  text-align: center;
+  border-right: 1px solid var(--xl-head-border);
+  color: var(--xl-text);
+}
+
+.xl-fx {
+  width: 34px;
+  text-align: center;
+  font-style: italic;
+  color: var(--xl-head-text);
+  border-right: 1px solid var(--xl-head-border);
+}
+
+.xl-formula-input { flex: 1; }
+
+.xl-grid-area { flex: 1 1 auto; overflow: hidden; }
+
+/* 월루모드 OFF: 엑셀 위장 없이 원래 카드형 게임 화면 */
+body:not(.stealth) #screen-game {
+  position: static;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--text);
+}
+
+body:not(.stealth) .xl-titlebar,
+body:not(.stealth) .xl-menubar,
+body:not(.stealth) .xl-toolbar,
+body:not(.stealth) .xl-formulabar,
+body:not(.stealth) .xl-grid-area,
+body:not(.stealth) .xl-tabs,
+body:not(.stealth) .xl-statusbar { display: none; }
+
+body.stealth #game-normal { display: none; }
+
+/* 일반 모드 게임 화면 (카드형) */
+.my-secret {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.my-secret b {
+  color: var(--xl-green);
+  letter-spacing: 3px;
+}
+
+.turn-indicator {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  margin-bottom: 16px;
+}
+
+.guess-area {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.guess-area input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  font-size: 18px;
+  letter-spacing: 4px;
+  text-align: center;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text);
+}
+
+.guess-area input:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+}
+
+.guess-area input::placeholder { letter-spacing: 1px; }
+
+.guess-area button {
+  width: auto;
+  padding: 12px 18px;
+  white-space: nowrap;
+}
+
+table#history-normal {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table#history-normal th, table#history-normal td {
+  padding: 8px 4px;
+  text-align: center;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+table#history-normal th { color: var(--muted); font-weight: 600; }
+
+#history-normal .badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin: 0 2px;
+}
+
+#history-normal .badge.strike { background: var(--pill-strike-bg); color: var(--pill-strike-tx); }
+#history-normal .badge.ball { background: var(--pill-ball-bg); color: var(--pill-ball-tx); }
+#history-normal .badge.out { background: var(--pill-out-bg); color: var(--pill-out-tx); }
+
+table#sheet {
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+  color: var(--xl-text);
+}
+
+table#sheet th, table#sheet td {
+  border: 1px solid var(--xl-grid);
+  height: 24px;
+  padding: 0 8px;
+  text-align: center;
+  font-weight: 400;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.xl-letters th {
+  background: var(--xl-head-bg);
+  color: var(--xl-head-text);
+  font-size: 12px;
+  font-weight: 400;
+  width: 90px;
+  border-color: var(--xl-head-border);
+}
+
+.xl-corner, .xl-rownum {
+  background: var(--xl-head-bg);
+  color: var(--xl-head-text);
+  width: 32px;
+  font-size: 12px;
+  border-color: var(--xl-head-border) !important;
+}
+
+.xl-label { font-weight: 700; }
+.xl-header-cell { font-weight: 700; }
+
+#my-secret-display {
+  color: var(--xl-green);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+#turn-indicator { text-align: left; }
+
+.xl-input-cell { padding: 0 !important; }
+
+.xl-input-cell input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--xl-text);
+  font: inherit;
+  text-align: center;
+  letter-spacing: 3px;
+  padding: 4px 8px;
+  outline: none;
+}
+
+.xl-input-cell input::placeholder { letter-spacing: 0; }
+
+.xl-input-cell:focus-within {
+  outline: 2px solid var(--xl-green);
+  outline-offset: -2px;
+}
+
+.xl-btn-cell { padding: 2px !important; }
+
+.xl-btn-cell #btn-guess {
+  width: 100%;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--xl-btnface);
+  color: var(--xl-text);
+  border: 1px solid var(--xl-btnborder);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.xl-btn-cell #btn-guess:hover { background: var(--xl-btnface-hover); }
+
+.xl-btn-cell #btn-guess:disabled {
+  background: var(--xl-btnface);
+  color: var(--xl-out);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.xl-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  background: var(--xl-head-bg);
+  border-top: 1px solid var(--xl-head-border);
+  padding: 0 8px;
+  height: 25px;
+}
+
+.xl-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  height: 22px;
+  background: var(--xl-head-bg);
+  border-top: 1px solid var(--xl-head-border);
+  padding: 0 14px;
+  font-size: 11.5px;
+  color: var(--xl-head-text);
+}
+
+.xl-tab {
+  background: var(--xl-bg);
+  color: var(--xl-green);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 14px;
+  border-left: 1px solid var(--xl-head-border);
+  border-right: 1px solid var(--xl-head-border);
+  border-bottom: 2px solid var(--xl-green);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.xl-tab-add {
+  color: var(--xl-head-text);
+  font-size: 14px;
+  padding: 0 8px;
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 3px;
+}
+
+/* 엑셀 시트에서는 조건부서식 느낌의 색 글씨 */
+#sheet .badge.strike { color: var(--xl-green); }
+#sheet .badge.ball { color: var(--xl-ball); }
+#sheet .badge.out { color: var(--xl-out); }
+
+#screen-end h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#update-notice {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+#update-notice.hidden { display: none; }
+
+#update-notice button {
+  width: auto;
+  padding: 4px 10px;
+  font-size: 12px;
+}

@@ -1,0 +1,42 @@
+/* 미니월루천국 디자인 토큰 — "야근 사무실의 비밀 아지트"
+   다크: 잉크그린 밤 사무실 + 엑셀 그린 + 골드(티츄 카드 테이블 계승)
+   라이트: 문서/종이 톤. 테마는 body[data-theme]로 제어(prefs.js). */
+
+body[data-theme="light"] {
+  --bg: #f1efe8;
+  --bg-deep: #e7e4da;
+  --panel: #fbfaf6;
+  --panel-border: #ddd8ca;
+  --line: #e2ddd0;
+  --text: #20281f;
+  --muted: #75806f;
+  --accent: #217346; /* 엑셀 그린 */
+  --accent-hi: #2e9e63;
+  --accent-soft: rgba(33, 115, 70, 0.12);
+  --gold: #a97e2f;
+  --gold-hi: #c99b45;
+  --shadow: 0 10px 30px rgba(32, 40, 31, 0.08);
+}
+
+body[data-theme="dark"] {
+  --bg: #0e1512;
+  --bg-deep: #0a100d;
+  --panel: #151f1a;
+  --panel-border: #243029;
+  --line: #1e2822;
+  --text: #e8e6dc;
+  --muted: #93a096;
+  --accent: #2e9e63;
+  --accent-hi: #3fc07d;
+  --accent-soft: rgba(46, 158, 99, 0.16);
+  --gold: #d8b36c;
+  --gold-hi: #e7c987;
+  --shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* 서체 역할: 본문 고딕 / 디스플레이 세리프(라틴)+자간 / 수치·코드 모노 */
+body {
+  --font-body: "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", system-ui, sans-serif;
+  --font-display: Georgia, "Times New Roman", "Apple SD Gothic Neo", "Malgun Gothic", serif;
+  --font-mono: Consolas, "Courier New", monospace;
+}

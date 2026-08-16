@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미니월루천국</title>
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<style>
+  /* ---------- 랜딩 공통 ---------- */
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  header.top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 22px 0;
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .wordmark .mark {
+    color: var(--accent);
+    font-size: 16px;
+  }
+
+  .top .spacer { flex: 1; }
+
+  .auth-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+  }
+
+  .auth-strip .nick { font-weight: 700; }
+
+  .auth-strip a.link {
+    color: var(--muted);
+    border-bottom: 1px dotted var(--muted);
+  }
+
+  .auth-strip a.link:hover { color: var(--accent); }
+
+  #btn-login {
+    width: auto;
+    padding: 9px 22px;
+    font-size: 13.5px;
+  }
+
+  /* ---------- 히어로 ---------- */
+  .hero {
+    padding: 72px 0 56px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 6vw, 54px);
+    line-height: 1.22;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .hero p.sub {
+    margin-top: 18px;
+    max-width: 34em;
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  .hero p.sub b { color: var(--text); }
+
+  #resume-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  #resume-badge .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent-hi);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% { opacity: 0.35; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #resume-badge .dot { animation: none; }
+  }
+
+  /* ---------- 게임 타일 ---------- */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin: 8px 0 14px;
+  }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  @media (max-width: 720px) {
+    .tiles { grid-template-columns: 1fr; }
+  }
+
+  a.tile {
+    display: block;
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 26px 22px 22px;
+    overflow: hidden;
+    transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+  }
+
+  a.tile:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow);
+  }
+
+  .tile .players {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+  }
+
+  .tile h2 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    margin: 8px 0 6px;
+  }
+
+  .tile p {
+    font-size: 13.5px;
+    color: var(--muted);
+    min-height: 2.8em;
+  }
+
+  .tile .go {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .tile .go::after {
+    content: " →";
+    transition: margin 0.14s ease;
+  }
+
+  a.tile:hover .go::after { margin-left: 4px; }
+
+  /* 타일 장식: 게임별 시그니처 오너먼트 */
+  .tile .orn {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    opacity: 0.6;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  .tile[data-game="tichu"] .orn {
+    font-family: var(--font-display);
+    font-size: 30px;
+    color: var(--gold);
+    opacity: 0.5;
+    transform: rotate(8deg);
+  }
+
+  .tile[data-game="omok"] .orn span {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    margin-left: 4px;
+    background: var(--text);
+  }
+
+  .tile[data-game="omok"] .orn span + span {
+    background: transparent;
+    border: 1.5px solid var(--muted);
+  }
+
+  /* ---------- 푸터 ---------- */
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* ---------- 위장 면 (파일 탐색기) ---------- */
+  .file-face { display: none; }
+
+  body.stealth .brand-face { display: none; }
+
+  body.stealth .file-face { display: block; }
+
+  body.stealth {
+    background: var(--bg);
+  }
+
+  .explorer {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 28px 24px;
+  }
+
+  .explorer h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .explorer .crumb {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 22px;
+  }
+
+  .explorer .cols,
+  .explorer a.row {
+    display: grid;
+    grid-template-columns: 1fr 180px 90px;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 12px;
+  }
+
+  .explorer .cols {
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .explorer a.row {
+    border-radius: 6px;
+    font-size: 13.5px;
+  }
+
+  .explorer a.row:hover { background: var(--accent-soft); }
+
+  .explorer .row .meta {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 640px) {
+    .explorer .cols, .explorer a.row { grid-template-columns: 1fr 110px; }
+    .explorer .cols span:last-child, .explorer .row .meta.size { display: none; }
+  }
+
+  /* 위장 모드의 컨트롤: 우상단에 희미하게 */
+  body.stealth header.top {
+    position: fixed;
+    top: 6px;
+    right: 10px;
+    padding: 0;
+    z-index: 10;
+  }
+
+  body.stealth .wordmark,
+  body.stealth .auth-strip { display: none; }
+
+  body.stealth .mw-iconbtn {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+    opacity: 0.35;
+    background: transparent;
+    border: none;
+  }
+
+  body.stealth .mw-iconbtn:hover { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+<script>
+  // 첫 페인트 전에 테마/위장 적용 (FOUC 방지) — prefs.js와 같은 키를 동기적으로 읽는다
+  document.body.dataset.theme = localStorage.getItem("mw:theme") === "dark" ? "dark" : "light";
+  var _s = localStorage.getItem("mw:stealth");
+  if (_s == null) _s = localStorage.getItem("tichu-stealth");
+  document.body.classList.toggle("stealth", _s !== "0");
+</script>
+
+<header class="top">
+  <a class="wordmark" href="/"><span class="mark">▦</span>미니월루천국</a>
+  <span class="spacer"></span>
+  <button id="btn-theme" class="mw-iconbtn" title="테마 전환">🌙</button>
+  <button id="btn-stealth" class="mw-iconbtn" title="위장 전환">👔</button>
+  <span class="auth-strip brand-face" id="auth-strip">
+    <button id="btn-login" class="mw-btn gold hidden">로그인</button>
+    <span id="me" class="hidden"><span class="nick" id="me-nick"></span>
+      · <a class="link" href="/stats/">전적</a>
+      · <a class="link" href="#" id="btn-logout">로그아웃</a></span>
+  </span>
+</header>
+
+<!-- ============ 브랜드 면 ============ -->
+<div class="brand-face">
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">몰래 하는 게임 천국</div>
+      <h1>일하는 척은<br>저희가 <em>하겠습니다.</em></h1>
+      <p class="sub">
+        위장 모드를 켜면 어떤 게임이든 <b>평범한 업무 화면</b>처럼 보입니다.
+        방 코드 하나로 친구와 바로 시작하고, 전적은 계정에 차곡차곡 쌓입니다.
+      </p>
+      <a id="resume-badge" class="hidden" href="#"><span class="dot"></span><span id="resume-text"></span></a>
+    </section>
+
+    <div class="section-label">오늘의 할 일</div>
+    <div class="tiles">
+      <a class="tile" data-game="tichu" href="/tichu/">
+        <span class="orn">A♦</span>
+        <div class="players">4인 · 팀전</div>
+        <h2>티츄</h2>
+        <p>선언하고, 폭탄 치고, 파트너와 1000점까지. 밤의 카드 테이블.</p>
+        <span class="go">입장</span>
+        <span class="file"></span>
+      </a>
+      <a class="tile" data-game="omok" href="/omok/">
+        <span class="orn"><span></span><span></span></span>
+        <div class="players">2인 · 렌주룰</div>
+        <h2>오목</h2>
+        <p>흑에게만 금수가 있다. 다섯 알을 먼저 이어라.</p>
+        <span class="go">입장</span>
+        <span class="file"></span>
+      </a>
+      <a class="tile" data-game="baseball" href="/baseball/">
+        <span class="orn">4·7·2·9?</span>
+        <div class="players">2인 · 추리</div>
+        <h2>숫자야구</h2>
+        <p>스트라이크와 볼. 상대의 비밀 숫자를 먼저 부순다.</p>
+        <span class="go">입장</span>
+        <span class="file"></span>
+      </a>
+    </div>
+
+    <footer>
+      <span>미니월루천국</span>
+      <span>재미는 몰래 커진다</span>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ 위장 면 (문서 탐색기) ============ -->
+<div class="file-face">
+  <div class="explorer">
+    <h1>문서</h1>
+    <div class="crumb">내 파일 &gt; 업무 &gt; 2026</div>
+    <div class="cols"><span>이름</span><span>수정한 날짜</span><span>크기</span></div>
+    <a class="row" href="/tichu/"><span>📦 재고집계.xlsx</span><span class="meta">2026-08-16 오후 2:07</span><span class="meta size">128KB</span></a>
+    <a class="row" href="/omok/"><span>📊 월간집계.xlsx</span><span class="meta">2026-08-15 오전 9:12</span><span class="meta size">84KB</span></a>
+    <a class="row" href="/baseball/"><span>📈 주간실적_요약.xlsx</span><span class="meta">2026-08-14 오후 4:31</span><span class="meta size">67KB</span></a>
+  </div>
+</div>
+
+<script type="module">
+  import { initPrefsUI } from "/assets/js/prefs.js";
+  import { startVersionWatch } from "/assets/js/version.js";
+  import { getSession, getProfile, signOut } from "/assets/js/auth.js";
+  import { getMyActiveRoom } from "/assets/js/supabase.js";
+
+  const el = (id) => document.getElementById(id);
+  const GAME_NAMES = { tichu: "티츄", omok: "오목", baseball: "숫자야구" };
+
+  initPrefsUI({
+    themeBtn: el("btn-theme"),
+    stealthBtn: el("btn-stealth"),
+    stealthTitle: "문서",
+    normalTitle: "미니월루천국",
+  });
+  startVersionWatch();
+
+  el("btn-login").addEventListener("click", () => {
+    location.href = "/login/?next=" + encodeURIComponent("/");
+  });
+
+  const {
+    data: { session },
+  } = await getSession();
+
+  if (!session) {
+    el("btn-login").classList.remove("hidden");
+  } else {
+    const profile = await getProfile(session.user.id);
+    if (!profile) {
+      el("btn-login").classList.remove("hidden");
+    } else {
+      el("me-nick").textContent = profile.nickname;
+      el("me").classList.remove("hidden");
+      el("btn-logout").addEventListener("click", async (e) => {
+        e.preventDefault();
+        await signOut();
+        location.reload();
+      });
+      // 진행 중인 방이 있으면 이어하기 배지
+      try {
+        const active = await getMyActiveRoom(session.user.id);
+        if (active) {
+          const badge = el("resume-badge");
+          el("resume-text").textContent =
+            `${GAME_NAMES[active.gameType] || "게임"} · 방 ${active.code} ` +
+            (active.status === "playing" ? "진행 중 — 이어하기" : "대기실 — 돌아가기");
+          badge.href = `/${active.gameType || "tichu"}/`;
+          badge.classList.remove("hidden");
+        }
+      } catch (e) {
+        /* 전적/방 조회 실패는 랜딩을 막지 않는다 */
+      }
+    }
+  }
+</script>
+</body>
+</html>

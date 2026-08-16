@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전적 · 미니월루천국</title>
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<style>
+  body { display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .card { width: min(440px, 94vw); text-align: center; }
+  .card h1 { font-family: var(--font-display); font-size: 24px; margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .back { font-size: 13px; color: var(--muted); border-bottom: 1px dotted var(--muted); }
+</style>
+</head>
+<body>
+<script>
+  document.body.dataset.theme = localStorage.getItem("mw:theme") === "dark" ? "dark" : "light";
+  var _s = localStorage.getItem("mw:stealth");
+  document.body.classList.toggle("stealth", (_s == null ? "1" : _s) !== "0");
+</script>
+<div class="mw-card card">
+  <h1>전적</h1>
+  <p id="msg">불러오는 중...</p>
+  <a class="back" href="/">← 첫 화면으로</a>
+</div>
+<script type="module">
+  import { requireAuth } from "/assets/js/auth.js";
+  const { profile } = await requireAuth();
+  // P1에서 v_player_stats 기반 통합 전적으로 확장된다 (게임별 탭·랭킹·최근 경기)
+  document.getElementById("msg").textContent =
+    profile.nickname + "님의 통합 전적 페이지는 티츄 이관(P1)과 함께 열립니다.";
+</script>
+</body>
+</html>

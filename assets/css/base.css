@@ -1,0 +1,153 @@
+/* 미니월루천국 공용 베이스 — 리셋, 헤더, 카드, 버튼, 입력, 유틸 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- 헤더 (아이콘 토글 공용) ---------- */
+.mw-iconbtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.mw-iconbtn:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+}
+
+/* ---------- 카드/패널 ---------- */
+.mw-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- 버튼 ---------- */
+.mw-btn {
+  display: inline-block;
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  background: linear-gradient(180deg, var(--accent-hi), var(--accent));
+  color: #f4f8f4;
+  transition: filter 0.12s ease, transform 0.12s ease;
+}
+
+.mw-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.mw-btn:disabled {
+  filter: grayscale(0.6) brightness(0.8);
+  cursor: default;
+  transform: none;
+}
+
+.mw-btn.gold {
+  background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+  color: #241c0d;
+}
+
+.mw-btn.ghost {
+  background: transparent;
+  border: 1.5px solid var(--panel-border);
+  color: var(--text);
+}
+
+.mw-btn.ghost:hover {
+  border-color: var(--accent);
+  filter: none;
+}
+
+/* ---------- 입력 ---------- */
+.mw-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0.14em;
+}
+
+.mw-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.mw-input::placeholder {
+  color: var(--muted);
+  letter-spacing: 0.2em;
+}
+
+/* ---------- 배포 알림 바 (version.js가 생성) ---------- */
+#mw-update-notice {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 99;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+}
+
+#mw-update-notice button {
+  margin-left: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #f4f8f4;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}

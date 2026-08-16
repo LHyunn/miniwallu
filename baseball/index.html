@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>숫자야구</title>
+<link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>숫자야구</h1>
+    <button id="btn-stealth" title="월루모드 켜기">👔</button>
+    <button id="btn-theme" title="테마 전환">🌙</button>
+  </header>
+
+  <section id="screen-connect" class="screen">
+    <div class="card">
+      <h2>방 만들기</h2>
+      <p class="hint">방을 만들고 코드를 친구에게 알려주세요.</p>
+      <label class="hint" for="digit-select">자릿수 (방장이 정하면 친구에게 자동 적용)</label>
+      <select id="digit-select">
+        <option value="3">3자리</option>
+        <option value="4" selected>4자리</option>
+        <option value="5">5자리</option>
+        <option value="6">6자리</option>
+      </select>
+      <button id="btn-create">방 만들기</button>
+      <div id="create-result" class="hidden">
+        <p class="hint">친구에게 이 코드를 알려주세요</p>
+        <div id="room-code" class="code"></div>
+      </div>
+    </div>
+    <div class="divider">또는</div>
+    <div class="card">
+      <h2>입장하기</h2>
+      <p class="hint">친구에게 받은 코드를 입력하세요.</p>
+      <input id="join-code" class="code-input" maxlength="4" placeholder="코드 4자리" autocomplete="off">
+      <button id="btn-join">입장하기</button>
+    </div>
+    <p id="connect-status" class="status"></p>
+    <p id="build-info" class="build-info"></p>
+  </section>
+
+  <section id="screen-secret" class="screen hidden">
+    <h2>내 숫자 정하기</h2>
+    <p class="hint" id="secret-hint">0~9 중 서로 다른 숫자 4개를 정하세요. (예: 1938)</p>
+    <input id="secret-input" class="code-input" maxlength="4" placeholder="4자리 숫자" autocomplete="off" inputmode="numeric">
+    <button id="btn-ready">준비 완료</button>
+    <p id="secret-status" class="status"></p>
+  </section>
+
+  <section id="screen-game" class="screen hidden">
+    <div id="game-normal">
+      <div class="my-secret">내 숫자: <b id="my-secret-normal"></b></div>
+      <div id="turn-indicator-normal" class="turn-indicator"></div>
+      <div class="guess-area" id="guess-area">
+        <input id="guess-input" maxlength="4" placeholder="4자리 숫자" autocomplete="off" inputmode="numeric">
+        <button id="btn-guess">추측!</button>
+      </div>
+      <table id="history-normal">
+        <thead><tr><th>회차</th><th>내 추측</th><th>결과</th><th>상대 추측</th><th>결과</th></tr></thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+    <div class="xl-titlebar">
+      <span class="xl-qat">▦&nbsp;&nbsp;↺&nbsp;&nbsp;↻&nbsp;&nbsp;▾</span>
+      <span id="xl-filename">숫자야구.xlsx - Excel</span>
+      <span class="xl-title-spacer"></span>
+    </div>
+    <div class="xl-menubar">
+      <span class="xl-menu xl-menu-file">파일</span>
+      <span class="xl-menu active">홈</span>
+      <span class="xl-menu">삽입</span>
+      <span class="xl-menu">페이지 레이아웃</span>
+      <span class="xl-menu">수식</span>
+      <span class="xl-menu">데이터</span>
+      <span class="xl-menu">검토</span>
+      <span class="xl-menu">보기</span>
+      <span class="xl-menu">도움말</span>
+    </div>
+    <div class="xl-toolbar">
+      <span class="xl-tool-group"><span class="xl-fontbox">맑은 고딕 <small>▾</small></span><span class="xl-sizebox">11 <small>▾</small></span></span>
+      <span class="xl-tool-group"><span class="xl-tool"><b>가</b></span><span class="xl-tool"><i>가</i></span><span class="xl-tool"><u>가</u></span></span>
+      <span class="xl-tool-group"><span class="xl-tool">田</span><span class="xl-tool">◇</span><span class="xl-tool">🄰</span></span>
+      <span class="xl-tool-group"><span class="xl-tool">☰</span><span class="xl-tool">≡</span><span class="xl-tool">☱</span></span>
+      <span class="xl-tool-group"><span class="xl-fontbox">일반 <small>▾</small></span><span class="xl-tool">%</span><span class="xl-tool">,</span></span>
+    </div>
+    <div class="xl-formulabar">
+      <span id="xl-namebox">A1</span>
+      <span class="xl-fx">fx</span>
+      <span class="xl-formula-input"></span>
+    </div>
+    <div class="xl-grid-area">
+      <table id="sheet"><tbody id="sheet-grid"></tbody></table>
+    </div>
+    <div class="xl-tabs"><span class="xl-tab">Sheet1</span><span class="xl-tab-add">+</span></div>
+    <div class="xl-statusbar"><span>준비</span><span class="xl-status-right">▦ ▤ ▥ &nbsp;&nbsp;&mdash;&nbsp;&#9472;&#9472;&#9679;&#9472;&#9472;&nbsp;&#43;&nbsp;&nbsp;100%</span></div>
+    <div id="sheet-stash" class="hidden"></div>
+  </section>
+
+  <section id="screen-end" class="screen hidden">
+    <h2 id="end-message"></h2>
+    <p id="end-secrets" class="status"></p>
+    <button id="btn-rematch">다시하기</button>
+  </section>
+</div>
+
+<div id="update-notice" class="hidden">새 버전이 있습니다 <button id="btn-update">새로고침</button></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="app.js?v=4"></script>
+</body>
+</html>

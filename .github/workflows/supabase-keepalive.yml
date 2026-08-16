@@ -1,0 +1,21 @@
+# Supabase 무료 티어는 7일간 API 활동이 없으면 프로젝트가 일시정지된다.
+# 주 2회 REST 쿼리를 날려 활동을 유지한다. (publishable key는 공개 가능 값)
+name: supabase-keepalive
+
+on:
+  schedule:
+    - cron: "0 3 * * 1,4" # 월/목 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://erhsygjsnlbchvfwwodz.supabase.co/rest/v1/profiles?select=user_id&limit=1" \
+            -H "apikey: sb_publishable_-i288itoXEKj5KUY0LZkJw_ZX09C2Em" \
+            -H "Authorization: Bearer sb_publishable_-i288itoXEKj5KUY0LZkJw_ZX09C2Em")
+          echo "HTTP $code"
+          test "$code" = "200"

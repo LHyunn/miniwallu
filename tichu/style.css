@@ -1,0 +1,1098 @@
+* { box-sizing: border-box; }
+
+/* ============================================================
+   미니월루월드 · 티츄 — "밤의 카드 테이블"
+   펠트 테이블이 인터페이스. 차례는 금빛으로 표시된다.
+   카드/펠트/금색은 테마 불변, 주변 채도만 라이트/다크 전환.
+   ============================================================ */
+
+body {
+  /* 테마 가변 */
+  --bg: #ece9e1;
+  --panel: #ffffff;
+  --panel-border: #ddd8cc;
+  --text: #26221b;
+  --muted: #7d7769;
+  --input-bg: #ffffff;
+  --input-border: #cfc9ba;
+  --team-a: #2f7d54;
+  --team-b: #a8742f;
+  --overlay-bg: rgba(24, 28, 24, 0.55);
+  --xl-bg: #ffffff;
+  --xl-grid: #d8d8d8;
+  --xl-head-bg: #eceff1;
+  --xl-head-border: #c2c7cb;
+  --xl-head-text: #5b6166;
+  --xl-text: #1f1f1f;
+  --xl-green: #217346;
+  --xl-btnface: #e9ecef;
+  --xl-btnface-hover: #dde1e5;
+  --xl-btnborder: #a9b0b6;
+  --xl-titlebar-bg: #217346;
+  --xl-titlebar-text: #ffffff;
+  --xl-ribbon-bg: #f3f2f1;
+  --xf-me-bg: #c6efce;
+  --xf-me-tx: #276b24;
+  --xf-op-bg: #ffeb9c;
+  --xf-op-tx: #9c6500;
+
+  /* 불변: 테이블·카드·금 */
+  --felt-deep: #0d2018;
+  --felt: #1a3b2c;
+  --felt-hi: #275b41;
+  --felt-line: rgba(233, 214, 165, 0.16);
+  --gold: #d8b36c;
+  --gold-soft: rgba(216, 179, 108, 0.35);
+  --gold-deep: #9a7c3d;
+  --card-face: #fbf7ec;
+  --card-face-2: #f1ead8;
+  --card-edge: #d9d0b8;
+  --card-ink: #2a2620;
+  --su0: #2f7d54;   /* 옥 */
+  --su1: #3a3f46;   /* 검 */
+  --su2: #33639c;   /* 탑 */
+  --su3: #c6453c;   /* 별 */
+  --wine: #7c2a33;
+  --wine-hi: #97323e;
+}
+
+body[data-theme="dark"] {
+  --bg: #10140f;
+  --panel: #1b211b;
+  --panel-border: #2c352c;
+  --text: #ece9e0;
+  --muted: #96a094;
+  --input-bg: #141a14;
+  --input-border: #33402f;
+  --team-a: #4fc08a;
+  --team-b: #dca455;
+  --overlay-bg: rgba(0, 0, 0, 0.66);
+  --xl-bg: #212226;
+  --xl-grid: #3a3d44;
+  --xl-head-bg: #2b2e35;
+  --xl-head-border: #454952;
+  --xl-head-text: #b8bcc6;
+  --xl-text: #e8e8ec;
+  --xl-green: #4fbe8a;
+  --xl-btnface: #3a3d44;
+  --xl-btnface-hover: #454952;
+  --xl-btnborder: #555a64;
+  --xl-titlebar-bg: #1f2124;
+  --xl-titlebar-text: #c8ccd4;
+  --xl-ribbon-bg: #26282d;
+  --xf-me-bg: #2a5c3e;
+  --xf-me-tx: #7ee2a3;
+  --xf-op-bg: #4a4420;
+  --xf-op-tx: #e8d377;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -12%, rgba(39, 91, 65, 0.22), transparent 70%),
+    var(--bg);
+  color: var(--text);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  width: 100%;
+  max-width: 560px;
+  padding: 24px;
+}
+
+body:not(.stealth) #app:has(#screen-game:not(.hidden)) {
+  max-width: 880px;
+}
+
+/* ---------- 헤더/토글 ---------- */
+header h1 {
+  text-align: center;
+  margin: 0 0 22px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+header h1 .brand-accent {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+#btn-theme, #btn-stealth {
+  position: fixed;
+  z-index: 20;
+  top: 14px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 50%;
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+#btn-theme:hover, #btn-stealth:hover { transform: translateY(-1px); }
+#btn-theme { right: 14px; }
+#btn-stealth { right: 60px; }
+
+body.stealth.in-sheet #btn-theme, body.stealth.in-sheet #btn-stealth {
+  top: 3px;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  background: transparent;
+  border: none;
+}
+
+/* 창 컨트롤(─ ▢ ✕) 자리를 비켜 그 왼쪽에 배치 */
+body.stealth.in-sheet #btn-theme { right: 124px; }
+body.stealth.in-sheet #btn-stealth { right: 152px; }
+
+body.stealth h1,
+body.stealth .divider { display: none; }
+
+body.stealth #btn-theme,
+body.stealth #btn-stealth { opacity: 0.4; }
+
+body.stealth #btn-theme:hover,
+body.stealth #btn-stealth:hover { opacity: 1; }
+
+.hidden { display: none; }
+
+/* ---------- 공용 패널/입력/버튼 ---------- */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(10, 14, 10, 0.05);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 4px 0 14px;
+}
+
+.divider {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  margin: 14px 0;
+}
+
+input.code-input {
+  display: block;
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 19px;
+  letter-spacing: 4px;
+  text-align: center;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+input.code-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-soft);
+}
+
+select {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+button {
+  width: 100%;
+  padding: 13px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+  color: #241c0d;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+button:hover { filter: brightness(1.06); transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+
+button:disabled {
+  background: var(--panel-border);
+  color: var(--muted);
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+.btn-row { display: flex; gap: 10px; }
+.btn-row button { flex: 1; }
+
+.code {
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 10px;
+  text-indent: 10px;
+  color: var(--gold);
+  background: radial-gradient(circle at 50% 40%, var(--felt-hi), var(--felt) 75%);
+  border: 1px solid var(--felt-deep);
+  border-radius: 12px;
+  padding: 16px 10px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.status {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+  min-height: 20px;
+}
+
+.build-info {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 14px;
+}
+
+/* ---------- 로비 ---------- */
+#lobby-seats {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 10px;
+  align-items: center;
+  margin: 14px 0 8px;
+}
+
+.lobby-center {
+  grid-column: 2;
+  grid-row: 2;
+  text-align: center;
+}
+
+.lobby-center .hint { margin: 0 0 6px; }
+
+#lobby-seats .seat[data-seat="0"] { grid-column: 2; grid-row: 1; }
+#lobby-seats .seat[data-seat="1"] { grid-column: 3; grid-row: 2; }
+#lobby-seats .seat[data-seat="2"] { grid-column: 2; grid-row: 3; }
+#lobby-seats .seat[data-seat="3"] { grid-column: 1; grid-row: 2; }
+
+.seat {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-left-width: 4px;
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.seat:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(10, 14, 10, 0.12); }
+
+.seat[data-seat="0"], .seat[data-seat="2"] { border-left-color: var(--team-a); }
+.seat[data-seat="1"], .seat[data-seat="3"] { border-left-color: var(--team-b); }
+
+.seat-team {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.seat[data-seat="0"] .seat-team, .seat[data-seat="2"] .seat-team { color: var(--team-a); }
+.seat[data-seat="1"] .seat-team, .seat[data-seat="3"] .seat-team { color: var(--team-b); }
+
+.seat-name { font-size: 14.5px; font-weight: 600; }
+
+#room-settings label.hint { margin-bottom: 6px; }
+
+/* ============================================================
+   게임 화면 — 펠트 테이블
+   ============================================================ */
+#js-scoreboard {
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+#game-normal {
+  position: relative;
+  border-radius: 26px;
+  padding: 26px 22px 22px;
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 30%, var(--felt-hi), var(--felt) 70%, var(--felt-deep) 108%);
+  border: 1px solid var(--felt-deep);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+    inset 0 0 60px rgba(0, 0, 0, 0.4),
+    0 18px 40px rgba(8, 14, 10, 0.4);
+}
+
+/* 시그니처: 테이블 가장자리의 금선 */
+#game-normal::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1px solid var(--felt-line);
+  border-radius: 19px;
+  pointer-events: none;
+}
+
+/* ---------- 상대 배지 ---------- */
+#opponents {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+#opponents .op:nth-child(2) { transform: translateY(-6px); }
+
+.op {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 96px;
+  padding: 9px 14px 8px;
+  border-radius: 999px;
+  background: rgba(6, 14, 10, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.op-name {
+  color: #e9e4d4;
+  font-size: 13.5px;
+  font-weight: 700;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.op-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #b7c4b3;
+  font-size: 12px;
+}
+
+.op-count::before {
+  content: "";
+  width: 9px;
+  height: 13px;
+  border-radius: 2px;
+  background: var(--card-face);
+  border: 1px solid var(--card-edge);
+  box-shadow: 2px 0 0 -0.5px rgba(251, 247, 236, 0.55);
+}
+
+.op-tichu { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; }
+.op-tichu.b-tichu { color: var(--gold); }
+.op-tichu.b-grand { color: #ff9e7a; }
+
+/* 차례: 금빛 링 */
+.op.turn {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold), 0 0 22px 2px var(--gold-soft);
+}
+
+/* ---------- 트릭(테이블 중앙) ---------- */
+#trick-area {
+  min-height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0 2px;
+}
+
+.trick-play { text-align: center; }
+
+.trick-cards {
+  display: flex;
+  justify-content: center;
+}
+
+.trick-cards .card-t { margin-left: -16px; }
+.trick-cards .card-t:first-child { margin-left: 0; }
+.trick-cards .card-t:nth-child(odd) { transform: rotate(-2deg); }
+.trick-cards .card-t:nth-child(even) { transform: rotate(2deg) translateY(2px); }
+
+.trick-caption {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #b7c4b3;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 상태/타이머 ---------- */
+.turn-indicator {
+  text-align: center;
+  font-size: 13.5px;
+  color: #cfd8c8;
+  padding: 4px 0 2px;
+  min-height: 22px;
+  background: none;
+  border: none;
+}
+
+#turn-timer {
+  width: fit-content;
+  margin: 2px auto 0;
+  padding: 3px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #241c0d;
+  background: var(--gold);
+}
+
+/* 낼 수 있는 폭탄 구성 카드: 은은한 와인빛 글로우 */
+@keyframes bomb-glow {
+  from { box-shadow: 0 0 3px rgba(207, 82, 100, 0.35); }
+  to   { box-shadow: 0 0 12px rgba(207, 82, 100, 0.8); }
+}
+
+.card-t.bombable {
+  animation: bomb-glow 1.5s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-t.bombable {
+    animation: none;
+    box-shadow: 0 0 8px rgba(207, 82, 100, 0.6);
+  }
+}
+
+/* 내 티츄 선언 뱃지 */
+.my-tichu-badge {
+  position: relative;
+  z-index: 5; /* 선택으로 들어올린 카드(z-index 2~3)에 가려지지 않게 */
+  width: fit-content;
+  margin: 4px auto 0;
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #241c0d;
+  background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+  box-shadow: 0 0 14px var(--gold-soft);
+}
+
+.my-tichu-badge.grand {
+  color: #f6ecdf;
+  background: linear-gradient(180deg, var(--wine-hi), var(--wine));
+  box-shadow: 0 0 14px rgba(151, 50, 62, 0.5);
+}
+
+/* ---------- 내 손패 ---------- */
+#my-hand {
+  display: flex;
+  justify-content: center;
+  padding: 18px 6px 10px;
+  min-height: 108px;
+  border-radius: 14px;
+  transition: box-shadow 0.25s ease;
+}
+
+#my-hand.turn { box-shadow: 0 0 26px 0 var(--gold-soft); }
+
+#my-hand .card-t { margin-left: -28px; }
+#my-hand .card-t:first-child { margin-left: 0; }
+
+#my-hand .card-t:hover {
+  transform: translateY(-10px);
+  z-index: 3;
+}
+
+#my-hand .card-t.sel {
+  transform: translateY(-16px);
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--gold), 0 10px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- 카드 ---------- */
+.card-t {
+  position: relative;
+  flex: none;
+  width: clamp(50px, 8.2vw, 68px);
+  aspect-ratio: 0.72;
+  border-radius: 9px;
+  background: linear-gradient(160deg, var(--card-face), var(--card-face-2));
+  border: 1px solid var(--card-edge);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.card-t .rank {
+  position: absolute;
+  top: 5px;
+  left: 7px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(15px, 2.3vw, 19px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 랭크 아래 작은 수트 글리프 + 중앙 워터마크 */
+.card-t::before {
+  position: absolute;
+  top: 26px;
+  left: 8px;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.card-t::after {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(26px, 4.4vw, 34px);
+  opacity: 0.14;
+}
+
+.card-t.su0 .rank, .card-t.su0::before, .card-t.su0::after { color: var(--su0); }
+.card-t.su1 .rank, .card-t.su1::before, .card-t.su1::after { color: var(--su1); }
+.card-t.su2 .rank, .card-t.su2::before, .card-t.su2::after { color: var(--su2); }
+.card-t.su3 .rank, .card-t.su3::before, .card-t.su3::after { color: var(--su3); }
+
+.card-t.su0::before, .card-t.su0::after { content: "⬢"; }
+.card-t.su1::before, .card-t.su1::after { content: "♠"; }
+.card-t.su2::before, .card-t.su2::after { content: "▲"; }
+.card-t.su3::before, .card-t.su3::after { content: "★"; }
+
+/* 특수 카드: 진한 전용 배경 + 한글 이름 */
+.card-t.sp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f4efe2;
+  font-size: clamp(12px, 1.9vw, 14.5px);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  writing-mode: vertical-rl;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.card-t[data-card="52"] { background: linear-gradient(165deg, #2f8377, #1c5a50); border-color: #174740; }
+.card-t[data-card="53"] { background: linear-gradient(165deg, #77705f, #4e483c); border-color: #3d382e; }
+.card-t[data-card="54"] { background: linear-gradient(165deg, #c96a35, #8e3b57); border-color: #6e2d43; }
+.card-t[data-card="55"] { background: linear-gradient(165deg, #ab3030, #5e1616); border-color: #4a1111; }
+
+.card-t[data-card="52"]::after {
+  content: "1";
+  font-family: Georgia, serif;
+  color: #f4efe2;
+  opacity: 0.22;
+  writing-mode: horizontal-tb;
+}
+
+/* 현재 선택의 조합명 */
+#sel-combo {
+  text-align: center;
+  margin: 2px 0 0;
+}
+
+/* ---------- 조작 버튼 ---------- */
+#game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+#game-controls button { width: auto; min-width: 116px; }
+
+#btn-pass {
+  background: transparent;
+  border: 1.5px solid rgba(233, 228, 212, 0.5);
+  color: #e9e4d4;
+}
+
+#btn-pass:hover { border-color: #e9e4d4; filter: none; }
+
+#btn-pass:disabled {
+  background: transparent;
+  border-color: rgba(233, 228, 212, 0.16);
+  color: rgba(233, 228, 212, 0.3);
+}
+
+#btn-tichu {
+  background: linear-gradient(180deg, var(--wine-hi), var(--wine));
+  color: #f6ecdf;
+  min-width: 96px;
+}
+
+#btn-tichu:disabled { background: var(--felt-deep); color: rgba(233, 228, 212, 0.28); }
+
+#btn-play:disabled {
+  background: rgba(6, 14, 10, 0.4);
+  color: rgba(233, 228, 212, 0.3);
+}
+
+/* ---------- 오버레이 ---------- */
+.overlay.hidden { display: none; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(5px);
+  padding: 20px;
+  animation: overlay-in 0.18s ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.overlay .card {
+  width: min(560px, 94vw);
+  margin: 0;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  animation: panel-in 0.2s ease;
+}
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+#grand-hand {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 12px 0 16px;
+}
+
+#grand-hand .card-t { margin-left: -18px; cursor: default; }
+#grand-hand .card-t:first-child { margin-left: 0; }
+
+/* 교환 다이얼로그 안의 손패는 줄바꿈 허용 (다이얼로그 밖으로 넘치지 않게) */
+#overlay-exchange #my-hand {
+  flex-wrap: wrap;
+  row-gap: 10px;
+  padding: 8px 2px 12px;
+  min-height: 0;
+}
+
+/* 14장이 다이얼로그 한 줄에 들어가도록 카드 폭 축소 (기본 clamp보다 작게) */
+#overlay-exchange #my-hand .card-t { width: 46px; margin-left: -18px; }
+#overlay-exchange #my-hand .card-t:first-child { margin-left: 0; }
+#overlay-exchange #my-hand .card-t .rank { font-size: 14px; top: 4px; left: 5px; }
+
+#exchange-slots {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 12px 0 16px;
+}
+
+.exchange-slot {
+  flex: 1;
+  min-height: 118px;
+  max-width: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  border: 1.5px dashed var(--input-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--felt) 8%, var(--panel));
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.exchange-slot:hover { border-color: var(--gold); }
+.exchange-slot .hint { margin: 0; }
+.exchange-slot .card-t { cursor: pointer; }
+
+#wish-buttons {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin: 12px 0 14px;
+}
+
+#wish-buttons button {
+  width: 100%;
+  padding: 10px 0;
+  font-family: Georgia, serif;
+  font-size: 15px;
+  border-radius: 10px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text);
+}
+
+#wish-buttons button:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-soft);
+  filter: none;
+  transform: none;
+}
+
+#btn-wish-skip {
+  background: transparent;
+  border: 1.5px solid var(--input-border);
+  color: var(--muted);
+}
+
+/* 보조 액션은 고스트 버튼으로 구분 */
+#btn-dragon-right {
+  background: transparent;
+  border: 1.5px solid var(--input-border);
+  color: var(--text);
+}
+
+#btn-dragon-right:hover { border-color: var(--gold); filter: none; }
+
+/* 라지 티츄는 −200 리스크가 걸린 쪽이므로 '선언'이 고스트, 안전한 '선언 안 함'이 기본 버튼 */
+#btn-grand-yes {
+  background: transparent;
+  border: 1.5px solid var(--gold-deep);
+  color: var(--gold);
+}
+
+#btn-grand-yes:hover { border-color: var(--gold); filter: none; }
+
+/* 다이얼로그 ✕ (월루모드 엑셀 대화상자 전용 — 일반 모드에선 숨김) */
+#btn-grand-close { display: none; }
+
+#score-body { margin: 10px 0 16px; }
+
+#score-body .score-line,
+#score-body p {
+  font-size: 15px;
+  margin: 6px 0;
+}
+
+#match-result {
+  text-align: center;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  color: var(--gold);
+  margin: 14px 0 18px;
+}
+
+/* ============================================================
+   월루모드 구조 규칙 (시각은 stealth.css가 담당)
+   ============================================================ */
+body.stealth #game-normal,
+body.stealth #js-scoreboard { display: none; }
+
+body:not(.stealth) .xl-titlebar,
+body:not(.stealth) .xl-menubar,
+body:not(.stealth) .xl-toolbar,
+body:not(.stealth) .xl-formulabar,
+body:not(.stealth) .xl-grid-area,
+body:not(.stealth) .xl-tabs,
+body:not(.stealth) .xl-statusbar { display: none; }
+
+body.stealth #screen-game {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  background: var(--xl-bg);
+  font-family: Calibri, "Segoe UI", "Malgun Gothic", sans-serif;
+  font-size: 14px;
+  color: var(--xl-text);
+}
+
+body.stealth #screen-game.hidden { display: none; }
+
+/* ---------- 가짜 엑셀 크롬 ---------- */
+.xl-titlebar {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  flex: none;
+  background: var(--xl-titlebar-bg);
+  color: var(--xl-titlebar-text);
+  font-size: 12px;
+}
+
+.xl-qat { width: 130px; padding-left: 12px; letter-spacing: 1px; opacity: 0.9; }
+#xl-filename { flex: 1; text-align: center; }
+.xl-title-spacer { width: 60px; }
+
+/* 가짜 창 컨트롤(최소화/최대화/닫기) — 실제 엑셀 창의 우상단 문법 재현 */
+.xl-wincontrols {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.xl-wincontrols span {
+  width: 38px;
+  text-align: center;
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.xl-menubar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 30px;
+  flex: none;
+  background: var(--xl-ribbon-bg);
+  padding: 0 6px;
+  font-size: 12.5px;
+}
+
+.xl-menu { padding: 5px 11px; color: var(--xl-text); }
+
+.xl-menu.xl-menu-file {
+  background: var(--xl-green);
+  color: #fff;
+  font-weight: 600;
+}
+
+.xl-menu.active {
+  font-weight: 600;
+  color: var(--xl-green);
+  box-shadow: inset 0 -2px 0 var(--xl-green);
+}
+
+.xl-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 36px;
+  flex: none;
+  background: var(--xl-ribbon-bg);
+  border-bottom: 1px solid var(--xl-head-border);
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--xl-head-text);
+}
+
+.xl-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 14px;
+  border-right: 1px solid var(--xl-head-border);
+}
+
+.xl-tool-group:last-child { border-right: none; }
+
+.xl-fontbox, .xl-sizebox {
+  background: var(--xl-bg);
+  border: 1px solid var(--xl-head-border);
+  border-radius: 2px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.xl-tool { padding: 2px 4px; }
+
+.xl-formulabar {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  flex: none;
+  background: var(--xl-bg);
+  border-bottom: 1px solid var(--xl-head-border);
+  font-size: 12px;
+}
+
+#xl-namebox {
+  width: 70px;
+  text-align: center;
+  border-right: 1px solid var(--xl-head-border);
+  color: var(--xl-text);
+}
+
+.xl-fx {
+  width: 34px;
+  text-align: center;
+  font-style: italic;
+  color: var(--xl-head-text);
+  border-right: 1px solid var(--xl-head-border);
+}
+
+.xl-formula-input { flex: 1; padding-left: 8px; color: var(--xl-head-text); }
+
+.xl-grid-area { flex: 1 1 auto; overflow: hidden; }
+
+table#sheet {
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13.5px;
+  color: var(--xl-text);
+}
+
+table#sheet th, table#sheet td {
+  border: 1px solid var(--xl-grid);
+  height: 25px;
+  padding: 0 7px;
+  text-align: center;
+  font-weight: 400;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.xl-letters th {
+  background: var(--xl-head-bg);
+  color: var(--xl-head-text);
+  font-size: 12px;
+  font-weight: 400;
+  border-color: var(--xl-head-border);
+}
+
+.xl-corner, .xl-rownum {
+  background: var(--xl-head-bg);
+  color: var(--xl-head-text);
+  width: 32px;
+  font-size: 12px;
+  border-color: var(--xl-head-border) !important;
+}
+
+.xl-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  background: var(--xl-head-bg);
+  border-top: 1px solid var(--xl-head-border);
+  padding: 0 8px;
+  height: 25px;
+}
+
+.xl-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  height: 22px;
+  background: var(--xl-head-bg);
+  border-top: 1px solid var(--xl-head-border);
+  padding: 0 14px;
+  font-size: 11.5px;
+  color: var(--xl-head-text);
+}
+
+.xl-tab {
+  background: var(--xl-bg);
+  color: var(--xl-green);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 14px;
+  border-left: 1px solid var(--xl-head-border);
+  border-right: 1px solid var(--xl-head-border);
+  border-bottom: 2px solid var(--xl-green);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.xl-tab-add {
+  color: var(--xl-head-text);
+  font-size: 14px;
+  padding: 0 8px;
+}
+
+/* ---------- 업데이트 알림 ---------- */
+#update-notice {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+#update-notice.hidden { display: none; }
+
+#update-notice button {
+  width: auto;
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 640px) {
+  #app { padding: 14px; }
+  #game-normal { padding: 18px 10px 14px; border-radius: 18px; }
+  .op { min-width: 76px; padding: 7px 10px 6px; }
+  #my-hand .card-t { margin-left: -30px; }
+  #game-controls button { min-width: 92px; padding: 11px 12px; }
+  #wish-buttons { grid-template-columns: repeat(5, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

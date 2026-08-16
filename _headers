@@ -1,0 +1,5 @@
+# 수동 캐시버스팅(?v=N) 폐기 — 전 자산 no-cache(매번 재검증, 대부분 304)로 항상 최신 보장
+/*
+  Cache-Control: no-cache
+/version.json
+  Cache-Control: no-store

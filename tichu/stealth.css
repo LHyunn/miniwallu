@@ -1,0 +1,385 @@
+/* ============================================================
+   월루모드 — "잘 꾸민 엑셀 보고서"
+   화려함이 아니라 엑셀다운 정성: 진초록 섹션 밴드, 헤더 필,
+   수트별 조건부서식 톤, KPI 셀, 엑셀 대화상자풍 오버레이.
+   ============================================================ */
+
+body {
+  --xs-band: #217346;          /* 섹션 밴드 (엑셀 강조 초록) */
+  --xs-band-tx: #ffffff;
+  --xs-head: #ddebe2;          /* 표 머리글 필 */
+  --xs-head-tx: #1d5c3c;
+  --xs-title: #1f3b2d;
+  --xs-su0-bg: #e7f3ea; --xs-su0-tx: #1e6b43;
+  --xs-su1-bg: #efefef; --xs-su1-tx: #3c4043;
+  --xs-su2-bg: #e8f0fb; --xs-su2-tx: #2e5e9e;
+  --xs-su3-bg: #fbeaea; --xs-su3-tx: #b03a31;
+  --xs-sp-bg: #fff3d6;  --xs-sp-tx: #8a5a00;
+  --xs-urgent-bg: #fde7e9; --xs-urgent-tx: #c00000;
+  --xs-dialog: #f0f0f0;
+  --xs-dialog-bar: #e3e3e3;
+  --xs-dialog-border: #9c9c9c;
+}
+
+body[data-theme="dark"] {
+  --xs-band: #2f8a57;
+  --xs-band-tx: #0e1512;
+  --xs-head: #2c3a31;
+  --xs-head-tx: #9fd4b4;
+  --xs-title: #cfe6d6;
+  --xs-su0-bg: #24382c; --xs-su0-tx: #7fd8a3;
+  --xs-su1-bg: #33363b; --xs-su1-tx: #c9ced6;
+  --xs-su2-bg: #26313f; --xs-su2-tx: #8fb6ec;
+  --xs-su3-bg: #3d2a29; --xs-su3-tx: #f19a92;
+  --xs-sp-bg: #3e3826;  --xs-sp-tx: #ecd28a;
+  --xs-urgent-bg: #46262a; --xs-urgent-tx: #ff8b8b;
+  --xs-dialog: #2b2d31;
+  --xs-dialog-bar: #232529;
+  --xs-dialog-border: #55585e;
+}
+
+/* ---------- 보고서 타이포그래피 ---------- */
+.xl-title-cell {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--xs-title);
+  text-align: left !important;
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+.xl-note {
+  text-align: left !important;
+  color: var(--xl-head-text);
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+  font-size: 12.5px;
+}
+
+.xl-status-cell {
+  text-align: left !important;
+  font-style: italic;
+  color: var(--xl-head-text);
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- 섹션 밴드 / 표 머리글 ---------- */
+.xs-section {
+  background: var(--xs-band) !important;
+  color: var(--xs-band-tx) !important;
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-align: left !important;
+  border-color: var(--xs-band) !important;
+}
+
+.xl-label {
+  background: var(--xs-head);
+  color: var(--xs-head-tx);
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+/* ---------- 품목(카드) 셀: 조건부서식 톤 ---------- */
+.xl-board-cell {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+}
+
+.xs-item.xs-su0 { background: var(--xs-su0-bg); color: var(--xs-su0-tx); font-weight: 600; }
+.xs-item.xs-su1 { background: var(--xs-su1-bg); color: var(--xs-su1-tx); font-weight: 600; }
+.xs-item.xs-su2 { background: var(--xs-su2-bg); color: var(--xs-su2-tx); font-weight: 600; }
+.xs-item.xs-su3 { background: var(--xs-su3-bg); color: var(--xs-su3-tx); font-weight: 600; }
+.xs-item.xs-special { background: var(--xs-sp-bg); color: var(--xs-sp-tx); font-weight: 700; }
+
+.xs-clickable { cursor: cell; }
+
+/* 랭크 표기 셀(손패/입고 내역): 한눈에 훑도록 가운데 정렬 + 큰 글자 */
+.xs-rank-cell {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* 품목코드 행의 병합 셀: 칩들을 라벨 열에 붙여 왼쪽 정렬 (table#sheet td의 center를 이겨야 함) */
+table#sheet td.xs-item-strip {
+  text-align: left;
+  padding-left: 3px;
+}
+
+/* 병합 셀 안의 좁은 카드 칩 — 품목코드 행만 열 폭을 좁게 보이게 하는 장치 */
+.xs-chip {
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 34px;
+  padding: 0 4px;
+  height: 20px;
+  line-height: 18px;
+  margin-right: 3px;
+  border: 1px solid var(--xl-grid);
+  vertical-align: middle;
+}
+
+/* 낼 수 있는 폭탄 구성 셀: 정적 주황 테두리 — 엑셀 셀은 깜빡이지 않으므로 애니메이션 금지 */
+.xs-bomb {
+  box-shadow: inset 0 0 0 2px rgba(197, 90, 17, 0.8);
+}
+
+/* 선택 셀 = 엑셀 셀 선택 테두리 + 채우기 핸들 */
+.xl-sel {
+  position: relative;
+  outline: 2px solid var(--xl-green);
+  outline-offset: -2px;
+}
+
+.xl-sel::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 5px;
+  height: 5px;
+  background: var(--xl-green);
+  border: 1px solid var(--xl-bg);
+}
+
+/* ---------- KPI / 상태 강조 ---------- */
+.xl-legend-me {
+  background: var(--xf-me-bg);
+  color: var(--xf-me-tx);
+  font-weight: 700;
+}
+
+.xl-legend-op {
+  background: var(--xf-op-bg);
+  color: var(--xf-op-tx);
+  font-weight: 700;
+}
+
+.xs-urgent {
+  background: var(--xs-urgent-bg);
+  color: var(--xs-urgent-tx);
+  font-weight: 700;
+}
+
+/* ---------- 시트 안 버튼: 윈폼 스타일 ---------- */
+.xl-btn-cell { padding: 2px !important; }
+
+.xl-btn-cell button,
+.xl-btn-cell #btn-play,
+.xl-btn-cell #btn-pass,
+.xl-btn-cell #btn-tichu {
+  width: auto;
+  min-width: 60px;
+  margin-right: 4px;
+  white-space: nowrap;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0;
+  background: var(--xl-btnface);
+  color: var(--xl-text);
+  border: 1px solid var(--xl-btnborder);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: none;
+  transform: none;
+}
+
+.xl-btn-cell button:hover,
+.xl-btn-cell #btn-play:hover,
+.xl-btn-cell #btn-pass:hover,
+.xl-btn-cell #btn-tichu:hover {
+  background: var(--xl-btnface-hover);
+  border-color: var(--xl-btnborder);
+  filter: none;
+  transform: none;
+}
+
+.xl-btn-cell button:disabled,
+.xl-btn-cell #btn-play:disabled,
+.xl-btn-cell #btn-pass:disabled,
+.xl-btn-cell #btn-tichu:disabled {
+  background: var(--xl-btnface);
+  color: var(--xl-head-text);
+  border-color: var(--xl-btnborder);
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ============================================================
+   월루모드 오버레이 = 엑셀 대화상자
+   ============================================================ */
+body.stealth .overlay {
+  backdrop-filter: none;
+  background: transparent; /* 실제 엑셀 모달은 배경을 어둡게 하지 않음 */
+  animation: none;
+}
+
+body.stealth .overlay .card {
+  position: relative;
+  width: min(520px, 92vw);
+  background: var(--xs-dialog);
+  border: 1px solid var(--xs-dialog-border);
+  border-radius: 6px;
+  padding: 0 16px 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  animation: none;
+  font-family: Calibri, "Segoe UI", "Malgun Gothic", sans-serif;
+  color: var(--xl-text);
+}
+
+body.stealth .overlay .card h2 {
+  margin: 0 -16px 12px;
+  padding: 8px 14px;
+  background: var(--xs-dialog-bar);
+  border-bottom: 1px solid var(--xs-dialog-border);
+  border-radius: 6px 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--xl-text);
+}
+
+body.stealth .overlay button {
+  border-radius: 3px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  background: var(--xl-btnface);
+  border: 1px solid var(--xl-btnborder);
+  color: var(--xl-text);
+  transition: none;
+  transform: none;
+}
+
+body.stealth .overlay button:hover {
+  background: var(--xl-btnface-hover);
+  filter: none;
+  transform: none;
+}
+
+body.stealth .overlay button:disabled {
+  opacity: 0.55;
+  background: var(--xl-btnface);
+  color: var(--xl-head-text);
+}
+
+/* 위장 원칙: 대화상자 안의 카드도 시트의 품목코드 칩과 같은 형태로 —
+   실물 카드(크림 배경/수트 문양/부채꼴)가 시트 위에 뜨면 흘깃 봐도 게임으로 읽힌다 */
+body.stealth .overlay .card-t {
+  width: auto;
+  min-width: 34px;
+  height: 20px;
+  aspect-ratio: auto;
+  padding: 0 4px;
+  border-radius: 2px;
+  background: var(--xl-bg);
+  border: 1px solid var(--xl-grid);
+  box-shadow: none;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+body.stealth .overlay .card-t::before,
+body.stealth .overlay .card-t::after { content: none; }
+
+body.stealth .overlay .card-t .rank {
+  position: static;
+  display: block;
+  text-align: center;
+  font-family: inherit;
+  font-size: 14px; /* 시트 칩(.xs-rank-cell)과 동일 */
+  font-weight: 700;
+  line-height: 18px;
+}
+
+body.stealth .overlay .card-t.su0 { background: var(--xs-su0-bg); }
+body.stealth .overlay .card-t.su0 .rank { color: var(--xs-su0-tx); }
+body.stealth .overlay .card-t.su1 { background: var(--xs-su1-bg); }
+body.stealth .overlay .card-t.su1 .rank { color: var(--xs-su1-tx); }
+body.stealth .overlay .card-t.su2 { background: var(--xs-su2-bg); }
+body.stealth .overlay .card-t.su2 .rank { color: var(--xs-su2-tx); }
+body.stealth .overlay .card-t.su3 { background: var(--xs-su3-bg); }
+body.stealth .overlay .card-t.su3 .rank { color: var(--xs-su3-tx); }
+
+body.stealth .overlay .card-t.sp,
+body.stealth .overlay .card-t[data-card="52"],
+body.stealth .overlay .card-t[data-card="53"],
+body.stealth .overlay .card-t[data-card="54"],
+body.stealth .overlay .card-t[data-card="55"] {
+  writing-mode: horizontal-tb;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  letter-spacing: 0;
+  text-indent: 0;
+  text-shadow: none;
+  background: var(--xs-sp-bg);
+  color: var(--xs-sp-tx);
+  border-color: var(--xl-grid);
+}
+
+body.stealth .overlay .card-t[data-card="52"]::after { content: none; }
+
+/* 칩은 겹치지 않고 나란히 — width:auto는 일반 모드의 46px 축소 규칙(ID 특이도) 상쇄용 */
+body.stealth #grand-hand .card-t,
+body.stealth #overlay-exchange #my-hand .card-t {
+  width: auto;
+  margin-left: 0;
+  margin-right: 3px;
+}
+
+/* 선택 상태 = 엑셀 셀 선택 테두리 (카드 들어올림 대신).
+   교환 다이얼로그의 #my-hand는 style.css의 ID 셀렉터(hover 리프트/sel 리프트)가 이기므로
+   같은 무효화를 ID 특이도로 한 번 더 선언한다. */
+body.stealth .overlay .card-t:hover,
+body.stealth #overlay-exchange #my-hand .card-t:hover {
+  transform: none;
+  z-index: auto;
+}
+
+body.stealth .overlay .card-t.sel,
+body.stealth #overlay-exchange #my-hand .card-t.sel {
+  transform: none;
+  box-shadow: none;
+  outline: 2px solid var(--xl-green);
+  outline-offset: -2px;
+}
+
+/* 다이얼로그 ✕ = 엑셀 대화상자 닫기 (라지 티츄에선 '선언 안 함'과 동일 동작) */
+body.stealth #btn-grand-close {
+  display: block;
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  width: 28px;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  font-size: 12px;
+  color: var(--xl-text);
+}
+
+body.stealth #btn-grand-close:hover { background: #c42b1c; color: #fff; }
+
+body.stealth #exchange-slots .exchange-slot {
+  background: var(--xl-bg);
+  border: 1px dashed var(--xl-btnborder);
+  border-radius: 4px;
+}
+
+body.stealth #wish-buttons button { font-family: Consolas, monospace; }
+
+body.stealth #match-result {
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--xl-text);
+}
