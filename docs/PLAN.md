@@ -50,7 +50,11 @@
 - **P1 (완료 2026-08-18)**: 005 적용(→구 프로토타입 티츄 회귀 확인 필수) + 티츄를 공용 모듈로 이관(net.js/auth.js/스크린auth/크롬/토글/버전체크 삭제, chrome.js+chrome.css 공용화) + /stats/ 구현(4탭+랭킹 5판↑+최근 20건). 검증: 새 도메인 4탭 풀 매치, 전적 반영, GoTrue 중복 경고 없음.
 - **P2 (완료 2026-08-18, build 7)**: 006 적용 + /baseball/ 재작성(connect/로비 2좌석/자릿수·선승 설정 동기화, 서버 판정, 월루모드 시트) + update_room_settings 공용 RPC. 검증: 2탭 E2E(2S2B/OUT/정답 판정, 매치 종료 동기화, 전적 반영), 라이브 스모크.
 - **P3 (완료 2026-08-18, build 8)**: 007 적용(start_game baseball 분기 병합 포함) + rules.js/tests 37건 + SQL 패리티(A 36 + 자가대국 벡터 3,000) 전건 통과 + /omok/ 재작성(로비/설정/보드/월루 시트/이어하기/재대국). 검증: 2탭 E2E — 삼삼 거부(미리보기+서버+턴 유지), 가로·대각·백 5목, 흑백 교대, 이어하기, 재대국 투표, 전적 반영.
-- **P4**: 오목·야구 위장 원칙 통일(업무 용어 → 게임 용어), 구 사이트 리다이렉트 은퇴 + Auth URL 정리, 랜딩 결선, 모바일 점검, 404, schema.sql 스냅샷 재생성 + APPLY_ORDER.md, 구 repo keep-alive 삭제.
+- **P4 (완료 2026-08-18)**: 위장 원칙 통일(P2/P3 신규 클라이언트가 이미 게임 용어), 구 weekly-report 전 경로 리다이렉트 은퇴 + keep-alive 삭제(miniwallu 것이 대체), Supabase Redirect URL 정리(github.io·레거시 localhost 제거, 3건만 유지), 404(#REF!), APPLY_ORDER.md(스냅샷 재생성 대신 적용 순서 문서화 — SQL Editor 재현 절차), 랜딩 결선·모바일(반응형 브레이크포인트 확인).
+
+## 남은 항목 (사용자 작업)
+- 구글 로그인: GCP OAuth 클라이언트 생성 후 ID/Secret을 Supabase Google provider에 등록
+  (redirect URI = `https://erhsygjsnlbchvfwwodz.supabase.co/auth/v1/callback`)
 
 ## 사용자(사람) 작업 체크리스트
 - [ ] Cloudflare 계정 → Workers & Pages → Create → Pages → Connect to Git → 이 repo → Framework: None, Build command 비움, Output: `/`
