@@ -102,7 +102,7 @@
 </head>
 <body>
 <script>
-  document.body.dataset.theme = localStorage.getItem("mw:theme") === "dark" ? "dark" : "light";
+  document.body.dataset.theme = localStorage.getItem("mw:theme") === "light" ? "light" : "dark";
   var _s = localStorage.getItem("mw:stealth");
   if (_s == null) _s = localStorage.getItem("tichu-stealth");
   document.body.classList.toggle("stealth", _s !== "0");

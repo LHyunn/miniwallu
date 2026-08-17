@@ -16,7 +16,7 @@
 </head>
 <body>
 <script>
-  document.body.dataset.theme = localStorage.getItem("mw:theme") === "dark" ? "dark" : "light";
+  document.body.dataset.theme = localStorage.getItem("mw:theme") === "light" ? "light" : "dark";
   var _s = localStorage.getItem("mw:stealth");
   document.body.classList.toggle("stealth", (_s == null ? "1" : _s) !== "0");
 </script>

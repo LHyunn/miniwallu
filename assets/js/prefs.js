@@ -23,7 +23,8 @@ function migrateLegacy() {
 migrateLegacy();
 
 export function getTheme() {
-  return localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light";
+  // 밤이 이 플랫폼의 기본 정체성 — 명시적으로 light를 고른 경우에만 라이트
+  return localStorage.getItem(THEME_KEY) === "light" ? "light" : "dark";
 }
 
 export function getStealth() {

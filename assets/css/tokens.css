@@ -1,42 +1,53 @@
-/* 미니월루천국 디자인 토큰 — "야근 사무실의 비밀 아지트"
-   다크: 잉크그린 밤 사무실 + 엑셀 그린 + 골드(티츄 카드 테이블 계승)
-   라이트: 문서/종이 톤. 테마는 body[data-theme]로 제어(prefs.js). */
-
-body[data-theme="light"] {
-  --bg: #f1efe8;
-  --bg-deep: #e7e4da;
-  --panel: #fbfaf6;
-  --panel-border: #ddd8ca;
-  --line: #e2ddd0;
-  --text: #20281f;
-  --muted: #75806f;
-  --accent: #217346; /* 엑셀 그린 */
-  --accent-hi: #2e9e63;
-  --accent-soft: rgba(33, 115, 70, 0.12);
-  --gold: #a97e2f;
-  --gold-hi: #c99b45;
-  --shadow: 0 10px 30px rgba(32, 40, 31, 0.08);
-}
+/* 미니월루천국 디자인 토큰 — "퇴근 안 한 사무실, 불 꺼진 뒤의 오락실"
+   다크가 기본 정체성. 액센트는 의미를 가진다: 골드=게임의 속살, 엑셀 그린=업무의 껍질.
+   테마는 body[data-theme]로 제어(prefs.js, 기본 dark). */
 
 body[data-theme="dark"] {
-  --bg: #0e1512;
-  --bg-deep: #0a100d;
-  --panel: #151f1a;
-  --panel-border: #243029;
-  --line: #1e2822;
-  --text: #e8e6dc;
-  --muted: #93a096;
-  --accent: #2e9e63;
-  --accent-hi: #3fc07d;
-  --accent-soft: rgba(46, 158, 99, 0.16);
+  --bg: #0b120e; /* 밤 사무실 잉크그린 */
+  --bg-deep: #070c09;
+  --panel: #131f18; /* 펠트의 어두운 버전 */
+  --panel-border: #24382c;
+  --line: #1c2b22;
+  --text: #ece7d8; /* 따뜻한 종이색 (티츄 카드면 계열) */
+  --muted: #8fa093;
   --gold: #d8b36c;
-  --gold-hi: #e7c987;
-  --shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+  --gold-hi: #e9cd8f;
+  --gold-soft: rgba(216, 179, 108, 0.14);
+  --xl: #2fa06a; /* 엑셀 그린 — 위장 세계의 색 */
+  --xl-hi: #46c286;
+  --xl-soft: rgba(47, 160, 106, 0.14);
+  --accent: var(--xl);
+  --accent-hi: var(--xl-hi);
+  --accent-soft: var(--xl-soft);
+  --card-face: #f4efe1; /* 카드/문서 면 */
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
 }
 
-/* 서체 역할: 본문 고딕 / 디스플레이 세리프(라틴)+자간 / 수치·코드 모노 */
+body[data-theme="light"] {
+  --bg: #efece2; /* 낮의 사무실 종이톤 */
+  --bg-deep: #e5e1d3;
+  --panel: #faf8f0;
+  --panel-border: #d9d3c0;
+  --line: #e0dbcb;
+  --text: #23291f;
+  --muted: #79806e;
+  --gold: #a97e2f;
+  --gold-hi: #8a6522;
+  --gold-soft: rgba(169, 126, 47, 0.12);
+  --xl: #217346;
+  --xl-hi: #1c5f3a;
+  --xl-soft: rgba(33, 115, 70, 0.1);
+  --accent: var(--xl);
+  --accent-hi: var(--xl-hi);
+  --accent-soft: var(--xl-soft);
+  --card-face: #fffdf6;
+  --shadow: 0 14px 40px rgba(35, 41, 31, 0.12);
+}
+
+/* 서체 역할: 디스플레이=무거운 한글 세리프(문서의 얼굴을 훔친 게임),
+   본문=Pretendard, 수치/코드=모노(엑셀의 모국어) */
 body {
-  --font-body: "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", system-ui, sans-serif;
-  --font-display: Georgia, "Times New Roman", "Apple SD Gothic Neo", "Malgun Gothic", serif;
+  --font-display: "Noto Serif KR", Georgia, "Batang", serif;
+  --font-body: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-mono: Consolas, "Courier New", monospace;
 }
