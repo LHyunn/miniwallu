@@ -1,0 +1,121 @@
+/* 숫자야구 월루모드 — 시트 "내용" 스타일 (크롬은 /assets/css/chrome.css) */
+
+body.stealth #game-normal { display: none; }
+
+/* 시트 셀 톤 */
+.xl-title-cell { font-weight: 700; text-align: left !important; }
+
+.xl-note { color: var(--xl-head-text); font-style: italic; font-size: 12.5px; }
+
+.xl-label {
+  background: color-mix(in srgb, var(--xl-green) 12%, var(--xl-bg));
+  color: var(--xl-green);
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.xs-section {
+  background: var(--xl-green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12.5px;
+  text-align: left !important;
+}
+
+.xl-status-cell { text-align: left !important; font-style: italic; }
+
+.xl-legend-me { background: color-mix(in srgb, #d8b36c 25%, var(--xl-bg)); font-weight: 700; }
+.xl-legend-op { background: color-mix(in srgb, var(--xl-green) 18%, var(--xl-bg)); font-weight: 700; }
+
+table#sheet td.xs-item-strip { text-align: left; padding-left: 3px; }
+
+.xs-chip {
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 24px;
+  padding: 0 4px;
+  height: 20px;
+  line-height: 18px;
+  margin-right: 3px;
+  border: 1px solid var(--xl-grid);
+  font-family: Consolas, monospace;
+  font-weight: 700;
+  text-align: center;
+}
+
+.xs-digit { background: color-mix(in srgb, var(--xl-green) 14%, var(--xl-bg)); color: var(--xl-green); }
+
+.xs-guess { font-family: Consolas, monospace; letter-spacing: 0.15em; font-weight: 700; }
+
+.xs-call { font-family: Consolas, monospace; color: var(--xl-head-text); }
+
+.xs-win { font-family: Consolas, monospace; color: #b03a31; font-weight: 800; }
+
+/* 시트 안 입력/버튼: 윈폼 톤 */
+.xl-btn-cell input.mw-input {
+  width: 120px;
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 4px;
+  border-radius: 3px;
+  border: 1px solid var(--xl-btnborder);
+  background: var(--xl-bg);
+  color: var(--xl-text);
+  font-family: Consolas, monospace;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-align: left;
+}
+
+.xl-btn-cell button {
+  width: auto;
+  min-width: 60px;
+  padding: 3px 12px;
+  border-radius: 3px;
+  border: 1px solid var(--xl-btnborder);
+  background: var(--xl-btnface);
+  color: var(--xl-text);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.xl-btn-cell button:hover { background: var(--xl-btnface-hover); filter: none; transform: none; }
+
+.xl-btn-cell button:disabled { opacity: 0.55; }
+
+/* 오버레이 = 엑셀 대화상자 */
+body.stealth .overlay { background: transparent; backdrop-filter: none; }
+
+body.stealth .overlay .mw-card {
+  border-radius: 6px;
+  padding: 0 16px 14px;
+  background: var(--xl-bg);
+  border: 1px solid var(--xl-btnborder);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-family: Calibri, "Segoe UI", "Malgun Gothic", sans-serif;
+  color: var(--xl-text);
+}
+
+body.stealth .overlay .mw-card h2 {
+  margin: 0 -16px 12px;
+  padding: 8px 14px;
+  background: var(--xl-head-bg);
+  border-bottom: 1px solid var(--xl-btnborder);
+  border-radius: 6px 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+body.stealth .overlay .mw-btn {
+  border-radius: 3px;
+  padding: 7px 14px;
+  font-size: 13px;
+  background: var(--xl-btnface);
+  border: 1px solid var(--xl-btnborder);
+  color: var(--xl-text);
+}
+
+body.stealth .overlay #round-end-body .reveal { color: var(--xl-green); }
+
+body.stealth .overlay #match-result .big { color: var(--xl-green); font-family: inherit; font-size: 18px; }
