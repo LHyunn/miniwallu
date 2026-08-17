@@ -4,33 +4,312 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>전적 · 미니월루천국</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <style>
-  body { display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .card { width: min(440px, 94vw); text-align: center; }
-  .card h1 { font-family: var(--font-display); font-size: 24px; margin-bottom: 8px; }
-  .card p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
-  .back { font-size: 13px; color: var(--muted); border-bottom: 1px dotted var(--muted); }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 22px 64px;
+  }
+
+  header.top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 0 26px;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 17px;
+  }
+
+  .wordmark .mark { color: var(--xl); margin-right: 8px; }
+
+  header.top .spacer { flex: 1; }
+
+  header.top .me {
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  header.top .me b { color: var(--gold); }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 30px;
+    margin-bottom: 18px;
+  }
+
+  /* 탭 */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .tabs button {
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--panel-border);
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .tabs button.on {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+    color: var(--gold-hi);
+  }
+
+  /* 내 기록 */
+  .my-card {
+    display: flex;
+    align-items: baseline;
+    gap: 26px;
+    padding: 20px 24px;
+    margin-bottom: 26px;
+  }
+
+  .my-card .big {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 34px;
+  }
+
+  .my-card .big small {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-left: 2px;
+  }
+
+  .my-card .cell { font-size: 13.5px; color: var(--muted); }
+
+  .my-card .cell b { display: block; font-size: 19px; color: var(--text); font-family: var(--font-mono); }
+
+  .my-card .tichu-extra { font-size: 12.5px; color: var(--muted); }
+
+  /* 섹션 */
+  .sec {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin: 26px 0 10px;
+  }
+
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  table.list {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  table.list th {
+    text-align: left;
+    font-size: 11.5px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-weight: 400;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  table.list td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  table.list td.num { font-family: var(--font-mono); }
+
+  table.list tr.me-row td { color: var(--gold-hi); font-weight: 700; }
+
+  .empty {
+    padding: 18px 4px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  .result-w { color: var(--xl-hi); font-weight: 700; }
+  .result-l { color: var(--muted); }
+
+  a.back { font-size: 13px; color: var(--muted); border-bottom: 1px dotted var(--muted); }
 </style>
 </head>
 <body>
 <script>
   document.body.dataset.theme = localStorage.getItem("mw:theme") === "light" ? "light" : "dark";
-  var _s = localStorage.getItem("mw:stealth");
-  document.body.classList.toggle("stealth", (_s == null ? "1" : _s) !== "0");
 </script>
-<div class="mw-card card">
+
+<div class="wrap">
+  <header class="top">
+    <a class="wordmark" href="/"><span class="mark">▦</span>미니월루천국</a>
+    <span class="spacer"></span>
+    <span class="me" id="me-line"></span>
+  </header>
+
   <h1>전적</h1>
-  <p id="msg">불러오는 중...</p>
-  <a class="back" href="/">← 첫 화면으로</a>
+
+  <div class="tabs" id="tabs">
+    <button data-g="all" class="on">전체</button>
+    <button data-g="tichu">티츄</button>
+    <button data-g="omok">오목</button>
+    <button data-g="baseball">숫자야구</button>
+  </div>
+
+  <div class="mw-card my-card" id="my-card">
+    <span class="big" id="my-rate">—</span>
+    <span class="cell">전적 <b id="my-record">—</b></span>
+    <span class="cell tichu-only hidden">티츄 성공 <b id="my-tichu">—</b></span>
+    <span class="cell tichu-only hidden">라지 성공 <b id="my-grand">—</b></span>
+  </div>
+
+  <div class="sec">랭킹 — 5판 이상</div>
+  <table class="list" id="rank-table">
+    <thead><tr><th>#</th><th>닉네임</th><th>판</th><th>승</th><th>승률</th></tr></thead>
+    <tbody id="rank-body"></tbody>
+  </table>
+  <div class="empty hidden" id="rank-empty">아직 5판 이상 플레이한 사람이 없습니다.</div>
+
+  <div class="sec">최근 경기</div>
+  <table class="list" id="recent-table">
+    <thead><tr><th>날짜</th><th>게임</th><th>결과</th><th>스코어</th><th>함께</th></tr></thead>
+    <tbody id="recent-body"></tbody>
+  </table>
+  <div class="empty hidden" id="recent-empty">아직 기록된 경기가 없습니다. 한 판 하고 오세요.</div>
+
+  <p style="margin-top:28px"><a class="back" href="/">← 첫 화면으로</a></p>
 </div>
+
 <script type="module">
   import { requireAuth } from "/assets/js/auth.js";
-  const { profile } = await requireAuth();
-  // P1에서 v_player_stats 기반 통합 전적으로 확장된다 (게임별 탭·랭킹·최근 경기)
-  document.getElementById("msg").textContent =
-    profile.nickname + "님의 통합 전적 페이지는 티츄 이관(P1)과 함께 열립니다.";
+  import { sb } from "/assets/js/supabase.js";
+  import { startVersionWatch } from "/assets/js/version.js";
+
+  const el = (id) => document.getElementById(id);
+  const GAME_NAMES = { tichu: "티츄", omok: "오목", baseball: "숫자야구", all: "전체" };
+  startVersionWatch();
+
+  const { session, profile } = await requireAuth();
+  const myId = session.user.id;
+  el("me-line").innerHTML = "";
+  const meB = document.createElement("b");
+  meB.textContent = profile.nickname;
+  el("me-line").append(meB, " 님");
+
+  // 데이터 3종: 전적 뷰(게임별+all), 닉네임, 최근 경기
+  const [statsRes, profilesRes, recentRes] = await Promise.all([
+    sb.from("v_player_stats").select("*"),
+    sb.from("profiles").select("user_id, nickname"),
+    sb
+      .from("matches")
+      .select("id, game_type, finished_at, score_a, score_b, winner_team, match_players(user_id, team, won)")
+      .order("finished_at", { ascending: false })
+      .limit(60),
+  ]);
+
+  const stats = statsRes.data || [];
+  const names = new Map((profilesRes.data || []).map((p) => [p.user_id, p.nickname]));
+  const recentAll = (recentRes.data || []).filter((m) =>
+    (m.match_players || []).some((p) => p.user_id === myId)
+  );
+
+  function renderTab(g) {
+    document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("on", b.dataset.g === g));
+
+    // 내 기록
+    const mine = stats.find((r) => r.user_id === myId && r.game_type === g);
+    el("my-rate").innerHTML = mine
+      ? Math.round(mine.win_rate * 1000) / 10 + "<small>%</small>"
+      : "—";
+    el("my-record").textContent = mine ? `${mine.games}전 ${mine.wins}승 ${mine.games - mine.wins}패` : "0전";
+    const tichuOnly = g === "tichu" || (g === "all" && mine && mine.tichu_calls > 0);
+    document.querySelectorAll(".tichu-only").forEach((n) => n.classList.toggle("hidden", !tichuOnly));
+    if (mine && tichuOnly) {
+      el("my-tichu").textContent = `${mine.tichu_wins}/${mine.tichu_calls}`;
+      el("my-grand").textContent = `${mine.grand_wins}/${mine.grand_calls}`;
+    }
+
+    // 랭킹 (5판 이상, 승률→판수 순)
+    const ranked = stats
+      .filter((r) => r.game_type === g && r.games >= 5)
+      .sort((a, b) => b.win_rate - a.win_rate || b.games - a.games)
+      .slice(0, 10);
+    const rb = el("rank-body");
+    rb.innerHTML = "";
+    ranked.forEach((r, i) => {
+      const tr = document.createElement("tr");
+      if (r.user_id === myId) tr.className = "me-row";
+      const cells = [
+        String(i + 1),
+        names.get(r.user_id) || "?",
+        String(r.games),
+        String(r.wins),
+        Math.round(r.win_rate * 1000) / 10 + "%",
+      ];
+      cells.forEach((t, ci) => {
+        const td = document.createElement("td");
+        if (ci !== 1) td.className = "num";
+        td.textContent = t;
+        tr.appendChild(td);
+      });
+      rb.appendChild(tr);
+    });
+    el("rank-table").classList.toggle("hidden", ranked.length === 0);
+    el("rank-empty").classList.toggle("hidden", ranked.length !== 0);
+
+    // 최근 경기
+    const recent = (g === "all" ? recentAll : recentAll.filter((m) => m.game_type === g)).slice(0, 20);
+    const tb = el("recent-body");
+    tb.innerHTML = "";
+    recent.forEach((m) => {
+      const me = m.match_players.find((p) => p.user_id === myId);
+      const others = m.match_players
+        .filter((p) => p.user_id !== myId)
+        .map((p) => names.get(p.user_id) || "?")
+        .join(", ");
+      const tr = document.createElement("tr");
+      const d = new Date(m.finished_at);
+      const date = `${d.getMonth() + 1}/${d.getDate()}`;
+      const tds = [
+        [date, "num"],
+        [GAME_NAMES[m.game_type] || m.game_type, ""],
+        [me.won ? "승" : "패", me.won ? "result-w" : "result-l"],
+        [`${m.score_a}:${m.score_b}`, "num"],
+        [others, ""],
+      ];
+      tds.forEach(([t, cls]) => {
+        const td = document.createElement("td");
+        if (cls) td.className = cls;
+        td.textContent = t;
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    el("recent-table").classList.toggle("hidden", recent.length === 0);
+    el("recent-empty").classList.toggle("hidden", recent.length !== 0);
+  }
+
+  document.querySelectorAll("#tabs button").forEach((b) =>
+    b.addEventListener("click", () => renderTab(b.dataset.g))
+  );
+  renderTab("all");
 </script>
 </body>
 </html>

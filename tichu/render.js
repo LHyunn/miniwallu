@@ -2,8 +2,8 @@
 // overlay-wish는 서버 상태(phase)로 표시되지 않는 순수 로컬 플로우라 app.js가 직접 제어하며,
 // 이 파일은 절대 건드리지 않는다.
 
-import { sortHand, classify, beats, playableBombSet, comboName, DOG } from "./rules.js?v=11";
-import { renderStealthGame } from "./stealth.js?v=11";
+import { sortHand, classify, beats, playableBombSet, comboName, DOG } from "./rules.js";
+import { renderStealthGame } from "./stealth.js";
 
 const el = (id) => document.getElementById(id);
 // '님'으로 끝나는 닉네임(과장님 등)에 호칭이 중복 붙는 것 방지

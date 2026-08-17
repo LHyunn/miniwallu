@@ -18,12 +18,15 @@
 // - S.game.status/winnerTeam, S.ui.scoreModalDismissedRound는 지시된 S 모양(core)에는 없지만
 //   match-end/score-modal 표시에 꼭 필요해 최소한으로 추가한 필드다.
 
-import { sb, rpc, gameChannel, roomPresence, getState, announceGameStart, announceSettings, getRoomStatus, getMyActiveRoom } from "./net.js?v=11";
-import { getSession, onAuth, signInGoogle, signInAnon, ensureProfile } from "./auth.js?v=11";
-import { classify, wishObliged, MAHJONG } from "./rules.js?v=11";
-import { render } from "./render.js?v=11";
+import { sb, rpc, gameChannel, roomPresence, announceGameStart, announceSettings, getRoomStatus, getMyActiveRoom } from "/assets/js/supabase.js";
+import { requireAuth } from "/assets/js/auth.js";
+import { applyPrefs, initPrefsUI } from "/assets/js/prefs.js";
+import { startVersionWatch } from "/assets/js/version.js";
+import { mountChrome } from "/assets/js/chrome.js";
+import { classify, wishObliged, MAHJONG } from "./rules.js";
+import { render } from "./render.js";
 
-const PENDING_NICK_KEY = "tichu-pending-nick";
+const getState = (gameId) => rpc("get_game_state", { p_game: gameId });
 
 const el = (id) => document.getElementById(id);
 
@@ -77,6 +80,12 @@ const S = {
 };
 
 let pendingPlaySelection = null;
+
+// ---------- 테마/월루모드 (공용 prefs, 키 mw:*) ----------
+function applyStealthClass() {
+  applyPrefs();
+}
+
 let roomChannel = null;
 let unsubGame = null;
 
@@ -89,104 +98,9 @@ function setError(msg) {
   const text = msg && msg.message ? msg.message : String(msg);
   if (S.screen === "game") el("turn-indicator-normal").textContent = text;
   else if (S.screen === "lobby") el("lobby-status").textContent = text;
-  else if (S.screen === "connect") el("connect-status").textContent = text;
-  else el("auth-status").textContent = text;
+  else el("connect-status").textContent = text;
 }
 
-// ---------- 테마 ----------
-function setTheme(theme) {
-  document.body.dataset.theme = theme;
-  el("btn-theme").textContent = theme === "dark" ? "☀️" : "🌙";
-  localStorage.setItem("tichu-theme", theme);
-}
-setTheme(localStorage.getItem("tichu-theme") === "dark" ? "dark" : "light");
-el("btn-theme").addEventListener("click", () => {
-  setTheme(document.body.dataset.theme === "dark" ? "light" : "dark");
-});
-
-// ---------- 월루모드 ----------
-function setStealth(on) {
-  localStorage.setItem("tichu-stealth", on ? "1" : "0");
-  document.title = on ? "재고집계.xlsx - Excel" : "티츄";
-  el("btn-stealth").textContent = on ? "📊" : "👔";
-  el("btn-stealth").title = on ? "월루모드 끄기" : "월루모드 켜기";
-  applyStealthClass();
-}
-function applyStealthClass() {
-  const on = localStorage.getItem("tichu-stealth") !== "0";
-  document.body.classList.toggle("stealth", on);
-}
-el("btn-stealth").addEventListener("click", () => {
-  setStealth(localStorage.getItem("tichu-stealth") === "0");
-  draw();
-});
-setStealth(localStorage.getItem("tichu-stealth") !== "0");
-
-// ---------- 인증 ----------
-async function handleSession(session) {
-  if (!session) {
-    S.session = null;
-    S.profile = null;
-    S.screen = "auth";
-    draw();
-    return;
-  }
-  S.session = session;
-  const pending = sessionStorage.getItem(PENDING_NICK_KEY);
-  if (pending) {
-    sessionStorage.removeItem(PENDING_NICK_KEY);
-    try {
-      const row = await ensureProfile(pending);
-      S.profile = { nickname: (row && row.nickname) || pending };
-    } catch (e) {
-      setError(e);
-    }
-  }
-  if (!S.profile) {
-    try {
-      const { data } = await sb
-        .from("profiles")
-        .select("nickname")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
-      if (data) S.profile = { nickname: data.nickname };
-    } catch (e) {
-      /* 무시 - 닉네임 입력 대기 */
-    }
-  }
-  S.screen = S.profile ? "connect" : "auth";
-  draw();
-  if (S.profile) checkResume();
-}
-
-async function submitAuth(kind) {
-  const nickname = el("nickname-input").value.trim();
-  if (!nickname) {
-    setError("닉네임을 입력해주세요.");
-    return;
-  }
-  try {
-    if (!S.session) {
-      if (kind === "google") {
-        sessionStorage.setItem(PENDING_NICK_KEY, nickname);
-        await signInGoogle();
-        return; // 리다이렉트됨
-      }
-      const { data, error } = await signInAnon();
-      if (error) throw error;
-      S.session = data.session;
-    }
-    const row = await ensureProfile(nickname);
-    S.profile = { nickname: (row && row.nickname) || nickname };
-    S.screen = "connect";
-    draw();
-    checkResume();
-  } catch (err) {
-    setError(err);
-  }
-}
-el("btn-google").addEventListener("click", () => submitAuth("google"));
-el("btn-anon").addEventListener("click", () => submitAuth("anon"));
 
 // ---------- 연결(방 만들기/입장) ----------
 el("btn-create").addEventListener("click", async () => {
@@ -471,6 +385,7 @@ function scheduleRefresh() {
 
 function subscribeGame() {
   unsubGame = gameChannel(S.game.id, {
+    privateTable: "hands",
     onGameUpdate(row) {
       if ((row.version ?? 0) > S.game.version) scheduleRefresh();
     },
@@ -478,7 +393,7 @@ function subscribeGame() {
       S.log.push(row);
       if ((row.version ?? 0) > S.game.version) scheduleRefresh();
     },
-    onHand(row) {
+    onPrivate(row) {
       if (S.session && row.user_id === S.session.user.id) {
         S.my.hand = row.cards || [];
         S.my.hidden6 = row.hidden6 || [];
@@ -497,7 +412,6 @@ function unsubscribeGame() {
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
-  checkForUpdate();
   if (S.screen === "game") refreshGameState();
 });
 
@@ -778,40 +692,22 @@ el("btn-back-lobby").addEventListener("click", () => {
 });
 
 // ---------- 부팅 ----------
-async function boot() {
-  const { data } = await getSession();
-  await handleSession(data.session);
-  onAuth((_event, session) => {
-    if (session && (!S.session || session.user.id !== S.session.user.id)) handleSession(session);
-    if (!session && S.session) handleSession(null);
-  });
-}
-draw();
-boot();
+mountChrome({ filename: "재고집계.xlsx - Excel" });
+initPrefsUI({
+  themeBtn: el("btn-theme"),
+  stealthBtn: el("btn-stealth"),
+  stealthTitle: "재고집계.xlsx - Excel",
+  normalTitle: "티츄",
+  onChange: () => draw(),
+});
+startVersionWatch();
 
-// ---------- 새 버전 감지 ----------
-const APP_VERSION = 11;
-function reloadForUpdate() {
-  location.replace(location.pathname + "?u=" + Date.now());
+async function boot() {
+  const { session, profile } = await requireAuth();
+  S.session = session;
+  S.profile = { nickname: profile.nickname };
+  S.screen = "connect";
+  draw();
+  checkResume();
 }
-function checkForUpdate() {
-  fetch("version.json?ts=" + Date.now(), { cache: "no-store" })
-    .then((r) => r.json())
-    .then((v) => {
-      const info = el("build-info");
-      if (info && v.updated) info.textContent = "마지막 업데이트: " + v.updated;
-      if (v.version === APP_VERSION) return;
-      const idle = S.screen === "auth" || S.screen === "connect";
-      const alreadyTried = sessionStorage.getItem("tichu-reloaded") === String(v.version);
-      if (idle && !alreadyTried) {
-        sessionStorage.setItem("tichu-reloaded", String(v.version));
-        reloadForUpdate();
-      } else {
-        el("update-notice").classList.remove("hidden");
-      }
-    })
-    .catch(() => {});
-}
-el("btn-update").addEventListener("click", reloadForUpdate);
-checkForUpdate();
-setInterval(checkForUpdate, 5 * 60 * 1000);
+boot();

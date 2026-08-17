@@ -8,7 +8,7 @@
 // (창 제목/리본/시트탭 등 엑셀 크롬 자체의 텍스트는 위장 구조의 일부라 유지)
 // 카드 셀 표기: 랭크만(2..10/J/Q/K/A), 수트는 셀 색(조건부서식 톤)으로 구분.
 
-import { sortHand, playableBombSet, comboName } from "./rules.js?v=11";
+import { sortHand, playableBombSet, comboName } from "./rules.js";
 
 const el = (id) => document.getElementById(id);
 // '님'으로 끝나는 닉네임(과장님 등)에 호칭이 중복 붙는 것 방지
@@ -310,10 +310,10 @@ export function renderStealthGame(S) {
 
 // 손패 셀 클릭 → 선택 토글 이벤트 발행 (app.js가 구독해 S.my.selection을 갱신).
 // #sheet-grid는 index.html에 정적으로 존재하므로 모듈 로드 시 1회만 등록하면 된다.
-el("sheet-grid") &&
-  el("sheet-grid").addEventListener("click", (e) => {
-    const node = e.target.closest("[data-card]");
-    if (!node) return;
-    const card = Number(node.dataset.card);
-    window.dispatchEvent(new CustomEvent("stealth-card-toggle", { detail: { card } }));
-  });
+// 크롬(#sheet-grid)은 mountChrome()이 나중에 주입하므로 document에 위임한다.
+document.addEventListener("click", (e) => {
+  const node = e.target.closest("#sheet-grid [data-card]");
+  if (!node) return;
+  const card = Number(node.dataset.card);
+  window.dispatchEvent(new CustomEvent("stealth-card-toggle", { detail: { card } }));
+});
