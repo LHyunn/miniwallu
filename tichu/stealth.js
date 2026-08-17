@@ -15,7 +15,7 @@ const el = (id) => document.getElementById(id);
 const nim = (nick) => (nick || "").replace(/님$/, "") + "님";
 
 const RANK_TEXT = { 11: "J", 12: "Q", 13: "K", 14: "A" };
-const SPECIAL_TEXT = { 52: "마작", 53: "개", 54: "봉황", 55: "용" };
+const SPECIAL_TEXT = { 52: "1", 53: "개", 54: "봉황", 55: "용" };
 
 function rankText(c) {
   if (c >= 52) return SPECIAL_TEXT[c] || "??";

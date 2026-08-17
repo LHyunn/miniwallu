@@ -9,7 +9,7 @@ const el = (id) => document.getElementById(id);
 // '님'으로 끝나는 닉네임(과장님 등)에 호칭이 중복 붙는 것 방지
 const nim = (nick) => (nick || "").replace(/님$/, "") + "님";
 const RANK_LABEL = { 11: "J", 12: "Q", 13: "K", 14: "A" };
-const SPECIAL_LABEL = { 52: "마작", 53: "개", 54: "봉황", 55: "용" };
+const SPECIAL_LABEL = { 52: "1", 53: "개", 54: "봉황", 55: "용" };
 
 const SCREENS = {
   auth: "screen-auth",
