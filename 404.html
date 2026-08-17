@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>#REF! · 미니월루천국</title>
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<style>
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+  }
+  .err {
+    font-family: var(--font-mono);
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  a.back {
+    display: inline-block;
+    padding: 10px 22px;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+  }
+  a.back:hover { border-color: var(--gold); color: var(--gold-hi); }
+</style>
+</head>
+<body>
+<script>
+  document.body.dataset.theme = localStorage.getItem("mw:theme") === "light" ? "light" : "dark";
+</script>
+<main>
+  <div class="err">#REF!</div>
+  <p>참조하는 시트가 없습니다. 주소를 확인해 주세요.</p>
+  <a class="back" href="/">첫 화면으로</a>
+</main>
+</body>
+</html>

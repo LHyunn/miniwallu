@@ -1,0 +1,101 @@
+/* 오목 월루모드 — 시트 "내용" 스타일 (크롬은 /assets/css/chrome.css) */
+
+body.stealth #game-normal { display: none; }
+
+/* 조건부서식 톤 (엑셀 "좋음"/"보통" 스타일) — 라이트/다크 각각 */
+body[data-theme="light"] {
+  --xf-me-bg: #c6efce;
+  --xf-me-tx: #276b24;
+  --xf-op-bg: #ffeb9c;
+  --xf-op-tx: #9c6500;
+}
+
+body[data-theme="dark"] {
+  --xf-me-bg: #2a5c3e;
+  --xf-me-tx: #7ee2a3;
+  --xf-op-bg: #4a4420;
+  --xf-op-tx: #e8d377;
+}
+
+.xl-title-cell { font-weight: 700; text-align: left !important; }
+
+.xl-note { color: var(--xl-head-text); font-style: italic; font-size: 12.5px; }
+
+.xl-label {
+  background: color-mix(in srgb, var(--xl-green) 12%, var(--xl-bg));
+  color: var(--xl-green);
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.xl-status-cell { text-align: left !important; font-style: italic; }
+
+.xl-legend-me { background: var(--xf-me-bg); color: var(--xf-me-tx); font-size: 12px; font-weight: 700; }
+.xl-legend-op { background: var(--xf-op-bg); color: var(--xf-op-tx); font-size: 12px; font-weight: 700; }
+
+/* 오목판 셀 (조건부서식 위장) */
+.xl-board-cell { font-size: 11px; cursor: default; }
+
+.xl-board-cell.xf-me { background: var(--xf-me-bg); color: var(--xf-me-tx); font-weight: 600; }
+.xl-board-cell.xf-op { background: var(--xf-op-bg); color: var(--xf-op-tx); font-weight: 600; }
+
+/* 마지막 수 = 엑셀 셀 선택 테두리 + fill handle */
+.xl-sel {
+  position: relative;
+  outline: 2px solid var(--xl-green);
+  outline-offset: -2px;
+}
+
+.xl-sel::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 5px;
+  height: 5px;
+  background: var(--xl-green);
+  border: 1px solid var(--xl-bg);
+}
+
+/* 승리 라인 = 범위 선택 하이라이트 */
+.xl-range {
+  box-shadow: inset 0 0 0 2px var(--xl-green);
+  background-image: linear-gradient(rgba(33, 115, 70, 0.18), rgba(33, 115, 70, 0.18));
+}
+
+/* 금수 표식 (흑 차례에만, 아주 미세하게) */
+.xl-forbid { color: var(--xl-head-text); opacity: 0.5; }
+
+/* 오버레이 = 엑셀 대화상자 */
+body.stealth .overlay { background: transparent; backdrop-filter: none; }
+
+body.stealth .overlay .mw-card {
+  border-radius: 6px;
+  padding: 0 16px 14px;
+  background: var(--xl-bg);
+  border: 1px solid var(--xl-btnborder);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-family: Calibri, "Segoe UI", "Malgun Gothic", sans-serif;
+  color: var(--xl-text);
+}
+
+body.stealth .overlay .mw-card h2 {
+  margin: 0 -16px 12px;
+  padding: 8px 14px;
+  background: var(--xl-head-bg);
+  border-bottom: 1px solid var(--xl-btnborder);
+  border-radius: 6px 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+body.stealth .overlay .mw-btn {
+  border-radius: 3px;
+  padding: 7px 14px;
+  font-size: 13px;
+  background: var(--xl-btnface);
+  border: 1px solid var(--xl-btnborder);
+  color: var(--xl-text);
+}
+
+body.stealth .overlay #match-result .big { color: var(--xl-green); font-family: inherit; font-size: 18px; }

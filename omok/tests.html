@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오목 규칙 엔진 테스트</title>
+<style>
+* { box-sizing: border-box; }
+
+body {
+  --bg: #f3f4f6;
+  --panel: #ffffff;
+  --panel-border: #d9dce1;
+  --text: #1f2328;
+  --muted: #6b7280;
+  --accent: #3b6fd4;
+  --pass-bg: #c6efce;
+  --pass-tx: #276b24;
+  --fail-bg: #ffd6d6;
+  --fail-tx: #a12727;
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+}
+
+body[data-theme="dark"] {
+  --bg: #0f1117;
+  --panel: #1a1d27;
+  --panel-border: #2a2e3a;
+  --text: #e8e8ec;
+  --muted: #9096a6;
+  --accent: #5b8def;
+  --pass-bg: #2a5c3e;
+  --pass-tx: #7ee2a3;
+  --fail-bg: #5c2a2a;
+  --fail-tx: #ff9c9c;
+}
+
+#wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0 0 4px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+#summary {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+#summary.all-pass { background: var(--pass-bg); color: var(--pass-tx); }
+#summary.has-fail { background: var(--fail-bg); color: var(--fail-tx); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--panel-border);
+  font-size: 13px;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  background: var(--panel);
+}
+
+tr:last-child td { border-bottom: none; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge.pass { background: var(--pass-bg); color: var(--pass-tx); }
+.badge.fail { background: var(--fail-bg); color: var(--fail-tx); }
+
+.err {
+  color: var(--fail-tx);
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>오목 규칙 엔진 테스트</h1>
+  <p class="hint">rules.js의 순수 함수들을 tests.js의 벡터로 검증합니다. 같은 케이스의 SQL 판은 /assets/sql/tests/omok_rules_tests.sql A파트입니다.</p>
+  <div id="summary"></div>
+  <table>
+    <thead>
+      <tr><th style="width:70px">결과</th><th>테스트</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+
+<script type="module">
+import { runTests } from './tests.js';
+
+const results = runTests();
+const failed = results.filter((r) => !r.pass);
+
+const summary = document.getElementById('summary');
+summary.textContent = `${results.length - failed.length} / ${results.length} 통과`;
+summary.className = failed.length === 0 ? 'all-pass' : 'has-fail';
+
+const rows = document.getElementById('rows');
+for (const r of results) {
+  const tr = document.createElement('tr');
+
+  const tdBadge = document.createElement('td');
+  const badge = document.createElement('span');
+  badge.className = `badge ${r.pass ? 'pass' : 'fail'}`;
+  badge.textContent = r.pass ? 'PASS' : 'FAIL';
+  tdBadge.appendChild(badge);
+
+  const tdName = document.createElement('td');
+  tdName.textContent = r.name;
+  if (!r.pass) {
+    const err = document.createElement('div');
+    err.className = 'err';
+    err.textContent = r.error;
+    tdName.appendChild(err);
+  }
+
+  tr.appendChild(tdBadge);
+  tr.appendChild(tdName);
+  rows.appendChild(tr);
+}
+</script>
+</body>
+</html>
